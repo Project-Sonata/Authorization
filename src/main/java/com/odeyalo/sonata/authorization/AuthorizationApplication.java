@@ -3,9 +3,9 @@ package com.odeyalo.sonata.authorization;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import reactivefeign.spring.config.EnableReactiveFeignClients;
 
-@EnableFeignClients(basePackages = "com.odeyalo.sonata.common")
+@EnableReactiveFeignClients(basePackages = "com.odeyalo.sonata.common.authentication.reactive")
 @SpringBootApplication
 @EnableDiscoveryClient
 public class AuthorizationApplication {
@@ -13,5 +13,4 @@ public class AuthorizationApplication {
     public static void main(String[] args) {
         SpringApplication.run(AuthorizationApplication.class, args);
     }
-
 }
