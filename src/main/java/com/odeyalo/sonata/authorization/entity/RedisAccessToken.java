@@ -1,7 +1,7 @@
 package com.odeyalo.sonata.authorization.entity;
 
 import lombok.*;
-import org.springframework.data.annotation.Id;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.redis.core.RedisHash;
 
 import java.util.Map;
@@ -12,13 +12,14 @@ import java.util.Map;
 @RedisHash
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @NoArgsConstructor
+@SuperBuilder
 public class RedisAccessToken extends BaseEntityImpl implements AccessToken {
-    @Id
     private String tokenValue;
     private Long expirationTime;
     private String userId;
+    @Singular
     private Map<String, Object> claims;
 
     public RedisAccessToken(Long id, String businessKey, Long creationTime, String tokenValue, Long expirationTime, String userId, Map<String, Object> claims) {
@@ -27,6 +28,37 @@ public class RedisAccessToken extends BaseEntityImpl implements AccessToken {
         this.expirationTime = expirationTime;
         this.userId = userId;
         this.claims = claims;
+    }
+
+    public static RedisAccessToken copyFrom(AccessToken parent) {
+        return RedisAccessToken
+                .builder()
+                .id(parent.getId())
+                .businessKey(parent.getBusinessKey())
+                .creationTime(parent.getCreationTime())
+                .tokenValue(parent.getTokenValue())
+                .expirationTime(parent.getExpirationTime())
+                .claims(parent.getClaims())
+                .userId(parent.getUserId())
+                .build();
+    }
+
+    @Override
+    public RedisAccessToken setId(Long id) {
+        super.setId(id);
+        return this;
+    }
+
+    @Override
+    public RedisAccessToken setBusinessKey(String businessKey) {
+        super.setBusinessKey(businessKey);
+        return this;
+    }
+
+    @Override
+    public RedisAccessToken setCreationTime(Long creationTime) {
+        super.setCreationTime(creationTime);
+        return this;
     }
 
     @Override
@@ -46,6 +78,6 @@ public class RedisAccessToken extends BaseEntityImpl implements AccessToken {
 
     @Override
     public Map<String, Object> getClaims() {
-        return null;
+        return claims;
     }
 }
