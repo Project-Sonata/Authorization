@@ -1,0 +1,34 @@
+{
+  "scopes": [
+    {
+      "name": "user-read",
+      "description": "Read user profile information",
+      "roles": ["guest", "user", "admin"]
+    },
+    {
+      "name": "user-library-read",
+      "description": "Read user's saved music library",
+      "roles": ["user", "admin"]
+    },
+    {
+      "name": "user-library-modify",
+      "description": "Modify user's saved music library",
+      "roles": ["user", "admin"]
+    },
+    {
+      "name": "playlist-read",
+      "description": "Read user's playlists",
+      "roles": ["user", "admin"]
+    },
+    {
+      "name": "playlist-modify",
+      "description": "Modify user's playlists",
+      "roles": ["user", "admin"]
+    },
+    {
+      "name": "streaming",
+      "description": "Stream music",
+      "roles": ["guest", "user", "admin"]
+    }
+  ]
+}
