@@ -2,12 +2,18 @@ package com.odeyalo.sonata.authorization.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+@SuperBuilder
+@Accessors(chain = true)
 public class BaseEntityImpl implements BaseEntity {
+    @Id
     protected Long id;
     protected String businessKey;
     protected Long creationTime;
