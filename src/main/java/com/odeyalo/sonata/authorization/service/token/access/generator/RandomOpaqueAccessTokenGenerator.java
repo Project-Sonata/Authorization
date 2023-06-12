@@ -34,7 +34,7 @@ public class RandomOpaqueAccessTokenGenerator implements OpaqueAccessTokenGenera
 
     @Override
     public Mono<GeneratedAccessToken> generateAccessToken(String userId, Map<String, Object> body) {
-        String value = RandomStringUtils.random(tokenLength);
+        String value = RandomStringUtils.randomAlphanumeric(tokenLength);
         long creationTimeMs = System.currentTimeMillis();
 
         GeneratedAccessToken token = GeneratedAccessToken.builder()
