@@ -2,7 +2,7 @@ package com.odeyalo.sonata.authorization.service.authentication;
 
 import com.odeyalo.sonata.common.authentication.dto.LoginCredentials;
 import com.odeyalo.sonata.common.authentication.exception.LoginAuthenticationFailedException;
-import com.odeyalo.sonata.common.authentication.reactive.ReactiveAuthenticationClient;
+import com.odeyalo.sonata.suite.reactive.client.ReactiveAuthenticationClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
