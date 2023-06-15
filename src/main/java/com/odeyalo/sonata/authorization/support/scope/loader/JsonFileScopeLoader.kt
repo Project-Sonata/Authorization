@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
 import java.io.File
+import java.io.FileNotFoundException
+import java.nio.file.Files
+import java.nio.file.Path
 
 /**
  * Load the scopes from Json file
@@ -23,6 +26,23 @@ class JsonFileScopeLoader(
 ) : ScopeLoader {
 
     private val logger: Logger = LoggerFactory.getLogger(JsonFileScopeLoader::class.java)
+
+    init {
+        if (!fileName.endsWith(".json")) {
+            throw ScopeLoadingFailedException("The file is not JSON file and cannot be processed by this implementation")
+        }
+        if (Files.exists(Path.of(fileName)).not()) {
+            throw ScopeLoadingFailedException(
+                "The file does not exist!",
+                FileNotFoundException("File name with with name $fileName does not exist")
+            )
+        }
+        try {
+            scopeLoaderObjectMapper.readTree(File(fileName));
+        } catch (ex: Exception) {
+            throw ScopeLoadingFailedException("The file contains not valid JSON!", ex)
+        }
+    }
 
     @Throws(ScopeLoadingFailedException::class)
     override fun loadScopes(): Flux<Scope> {
