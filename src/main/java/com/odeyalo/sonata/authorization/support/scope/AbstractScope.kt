@@ -16,7 +16,7 @@ abstract class AbstractScope(
 
 
     override fun supportsRole(roleName: String): Boolean {
-        return supportedRoles.contains(roleName)
+        return supportedRoles.contains(roleName.lowercase())
     }
 
     override fun toString(): String {
