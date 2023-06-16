@@ -38,13 +38,13 @@ public class ScopeBasedDelegatingPersistentAccessTokenManager implements AccessT
 
     @Override
     public Mono<AccessToken> createToken(User user) {
-        return scopeProvider.getScopes().collectList()
+        return scopeProvider.getScopesByRole(user.getRole()).collectList()
                 .flatMap(scopes -> {
                     Map<String, Object> claims = Map.of(SCOPES_CLAIM_NAME, scopes);
                     return accessTokenGenerator.generateAccessToken(String.valueOf(user.getId()), claims);
                 })
                 .map(GeneratedAccessTokenAdapter::new)
-                .flatMap(storage::save);
+            .flatMap(storage::save);
     }
 
     @Override
