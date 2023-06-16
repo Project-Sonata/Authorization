@@ -1,0 +1,8 @@
+{
+  "iss": "Sonata-Authorization",
+  "sub": "123",
+  "id": "an unique id of the token",
+  "iat": "timestamp when token was issued",
+  "scope": "playlist-private:read, profile:read etc",
+  "authority": "USER"
+}
