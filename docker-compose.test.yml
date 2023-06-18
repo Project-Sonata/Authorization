@@ -1,0 +1,11 @@
+version: '2.2'
+services:
+  sonata-authorization-microservice:
+    ports:
+      - "8090:8090"
+    image: sonata-authorization-test
+    container_name: sonata-authorization-container
+    env_file:
+      - test.env
+    volumes:
+      - "./maven-rep:/root/.m2"
