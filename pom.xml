@@ -15,10 +15,12 @@
     <description>authorization</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>20</java.version>
         <spring-cloud.version>2022.0.2</spring-cloud.version>
         <ASSERTJ_CORE_VERSION>3.24.2</ASSERTJ_CORE_VERSION>
         <kotlin.version>1.8.21</kotlin.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <distributionManagement>
@@ -104,8 +106,12 @@
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
-<!--        //////-->
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-contract-verifier</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.micrometer</groupId>
@@ -115,7 +121,7 @@
         </dependency>
 
         <dependency>
-            <groupId>io.micrometer</groupId>`
+            <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -162,6 +168,29 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+                <version>4.0.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <testMode>EXPLICIT</testMode>
+                    <baseClassForTests>
+                        com.odeyalo.sonata.authorization.testing.contract.TokenControllerBaseClass
+                    </baseClassForTests>
+                </configuration>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.groovy</groupId>
+                        <artifactId>groovy</artifactId>
+                        <version>4.0.2</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
