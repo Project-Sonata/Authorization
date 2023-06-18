@@ -33,7 +33,7 @@ class JsonFileScopeLoader(
         }
         if (Files.exists(Path.of(fileName)).not()) {
             throw ScopeLoadingFailedException(
-                "The file does not exist!",
+                "The file $fileName does not exist!",
                 FileNotFoundException("File name with with name $fileName does not exist")
             )
         }
