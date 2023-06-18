@@ -30,7 +30,8 @@ public class TokenController {
     @PostMapping(value = "/info", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<TokenIntrospectionResponse> tokenIntrospection(@RequestBody TokenIntrospectionRequest body) {
         return Mono.from(accessTokenManager.verifyToken(body.getToken()))
-                .map(t -> Optional.ofNullable(t))
+                .map(Optional::of)
+                .defaultIfEmpty(Optional.empty())
                 .map(optionalToken -> optionalToken.map(t -> {
                     String scopes = String.join(" ", ((List<Scope>) t.getClaims().get("scopes"))
                             .stream()
