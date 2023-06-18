@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.mockito.AdditionalMatchers.not;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /**
@@ -64,5 +66,7 @@ public class TokenControllerBaseClass {
                                         .build()
                         )
                 );
+        Mockito.when(tokenManager.verifyToken(not(eq(VALID_TOKEN_VALUE))))
+                .thenReturn(Mono.empty());
     }
 }
