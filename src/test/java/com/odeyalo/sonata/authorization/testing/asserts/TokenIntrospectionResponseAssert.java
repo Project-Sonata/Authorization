@@ -31,6 +31,12 @@ public class TokenIntrospectionResponseAssert extends AbstractAssert<TokenIntros
         if (actual.isValid()) {
             failWithMessage("Expected token introspection response to be invalid, but it is valid");
         }
+        if (actual.getScope() != null
+                || actual.getUserId() != null
+                || actual.getIssuedAt() != 0
+                || actual.getExpiresIn() != 0) {
+            failWithMessage("If token is invalid, then everything should be null but was <%s>", actual);
+        }
         return this;
     }
 
