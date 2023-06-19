@@ -176,9 +176,21 @@
                 <extensions>true</extensions>
                 <configuration>
                     <testMode>EXPLICIT</testMode>
-                    <baseClassForTests>
-                        com.odeyalo.sonata.authorization.testing.contract.TokenControllerBaseClass
-                    </baseClassForTests>
+                    <baseClassMappings>
+                        <baseClassMapping>
+                            <contractPackageRegex>.*authorization.*</contractPackageRegex>
+                            <baseClassFQN>
+                                com.odeyalo.sonata.authorization.testing.contract.AuthorizationControllerBaseClass
+                            </baseClassFQN>
+                        </baseClassMapping>
+
+                        <baseClassMapping>
+                            <contractPackageRegex>.*token.*</contractPackageRegex>
+                            <baseClassFQN>
+                                com.odeyalo.sonata.authorization.testing.contract.TokenControllerBaseClass
+                            </baseClassFQN>
+                        </baseClassMapping>
+                    </baseClassMappings>
                 </configuration>
 
                 <dependencies>
