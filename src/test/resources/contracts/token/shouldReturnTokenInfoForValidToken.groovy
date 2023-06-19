@@ -1,4 +1,4 @@
-package contracts
+package contracts.token
 
 import org.springframework.cloud.contract.spec.Contract
 
