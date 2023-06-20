@@ -40,7 +40,7 @@ public class InMemoryUser extends BaseEntityImpl implements User {
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override
