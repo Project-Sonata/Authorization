@@ -18,8 +18,17 @@ public class SuccessfulRegistrationResponseAssert extends AbstractAssert<Success
     }
 
     public SuccessfulRegistrationResponseAssert accessTokenNotNull() {
-        if (actual.getAccessToken() != null){
+        if (actual.getAccessToken() == null) {
             failWithMessage("The access token is null!");
+        }
+        return this;
+    }
+
+    public SuccessfulRegistrationResponseAssert expiresInEqualTo(long expectedExpiresIn) {
+        if (actual.getExpiresIn() == null) {
+            failWithMessage("The expires_in field is null!");
+        } else if (expectedExpiresIn != actual.getExpiresIn()) {
+            failWithMessage("The expires_in fields are not equal! Actual: <%s>,\n expected: <%s>", actual.getExpiresIn(), expectedExpiresIn);
         }
         return this;
     }
