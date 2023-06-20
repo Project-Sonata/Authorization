@@ -15,4 +15,6 @@ import lombok.experimental.FieldDefaults;
 public class SuccessfulRegistrationResponse {
     @JsonProperty("access_token")
     String accessToken;
+    @JsonProperty("expires_in")
+    Integer expiresIn;
 }
