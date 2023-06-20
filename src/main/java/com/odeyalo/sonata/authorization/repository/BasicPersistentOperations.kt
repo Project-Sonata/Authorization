@@ -12,7 +12,7 @@ interface BasicPersistentOperations<T, ID> {
 
     fun findAll(): Flux<T>
 
-    fun save(token: T): Mono<T>
+    fun save(entity: T): Mono<T>
 
     fun deleteById(id: ID): Mono<Void>
 
