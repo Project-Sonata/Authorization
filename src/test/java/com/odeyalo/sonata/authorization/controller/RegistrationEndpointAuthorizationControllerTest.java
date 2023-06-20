@@ -3,8 +3,10 @@ package com.odeyalo.sonata.authorization.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odeyalo.sonata.authorization.dto.SuccessfulRegistrationResponse;
+import com.odeyalo.sonata.authorization.testing.asserts.ErrorDetailsAssert;
 import com.odeyalo.sonata.authorization.testing.asserts.SuccessfulRegistrationResponseAssert;
 import com.odeyalo.sonata.common.authentication.dto.request.UserRegistrationInfo;
+import com.odeyalo.sonata.common.shared.ErrorDetails;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +22,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Tests for '/authorization/register' endpoint
@@ -118,6 +120,7 @@ class RegistrationEndpointAuthorizationControllerTest extends AuthorizationContr
 
             exchange.expectStatus().isBadRequest();
         }
+
         @Test
         @DisplayName("Register user with invalid info and expect 'application/json' content type")
         void expectContentTypeApplicationJson() throws Exception {
@@ -126,11 +129,53 @@ class RegistrationEndpointAuthorizationControllerTest extends AuthorizationContr
             response.expectHeader().contentType(MediaType.APPLICATION_JSON);
         }
 
-        private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest() throws JsonProcessingException {
-            return prepareAndSendInvalidRegistrationInfoRequest(t -> {});
+        @Test
+        @DisplayName("Register user with invalid info(password) and expect error details with 'invalid_password' in error code")
+        void expectErrorDetailsWithInvalidPasswordCode_IfPasswordIsInvalid() throws Exception {
+            WebTestClient.ResponseSpec response = prepareAndSendInvalidRegistrationInfoRequest();
+            // then
+            ErrorDetails details = response.expectBody(ErrorDetails.class).returnResult().getResponseBody();
+
+            ErrorDetailsAssert.from(details)
+                    .codeEqualTo("invalid_password");
         }
 
-        private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest(Consumer<UserRegistrationInfo> enhancer) throws JsonProcessingException {
+        @Test
+        @DisplayName("Register user with invalid info(password) and expect error details with description in error code")
+        void expectErrorDetailsWithDescription_IfPasswordIsInvalid() throws Exception {
+            WebTestClient.ResponseSpec response = prepareAndSendInvalidRegistrationInfoRequest();
+            // then
+            ErrorDetails details = response.expectBody(ErrorDetails.class).returnResult().getResponseBody();
+
+            ErrorDetailsAssert.from(details)
+                    .descriptionEqualTo("The password is invalid, password must contain at least 8 characters and 1 number");
+        }
+
+        @Test
+        @DisplayName("Register user with invalid info(password) and expect error details with description in error code")
+        void expectErrorDetailsWithSolution_IfPasswordIsInvalid() throws Exception {
+            WebTestClient.ResponseSpec response = prepareAndSendInvalidRegistrationInfoRequest();
+            // then
+            ErrorDetails details = response.expectBody(ErrorDetails.class).returnResult().getResponseBody();
+
+            ErrorDetailsAssert.from(details)
+                    .solutionEqualTo("To fix the problem - input the correct password with required format");
+        }
+
+
+
+
+        private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest() throws JsonProcessingException {
+            return prepareAndSendInvalidRegistrationInfoRequest(info -> info);
+        }
+
+        /**
+         * Prepares the invalid registration info and send the request to server
+         * @param enhancer - function to customize the UserRegistrationInfo
+         * @return - result of the request
+         * @throws JsonProcessingException - if json can't be build
+         */
+        private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest(Function<UserRegistrationInfo, UserRegistrationInfo> enhancer) throws JsonProcessingException {
             String email = "invalid", password = "invalid";
 
             UserRegistrationInfo registrationInfo = UserRegistrationInfo.builder()
@@ -140,7 +185,7 @@ class RegistrationEndpointAuthorizationControllerTest extends AuthorizationContr
                     .notificationEnabled(false)
                     .build();
 
-            enhancer.accept(registrationInfo);
+            registrationInfo = enhancer.apply(registrationInfo);
 
             String jsonBody = objectMapper.writeValueAsString(registrationInfo);
 
