@@ -44,13 +44,8 @@ public class UserFaker {
         return this;
     }
 
-    public UserFaker overrideId(long id) {
+    public UserFaker overrideId(Long id) {
         this.fakeUserCreator.id(id);
-        return this;
-    }
-
-    public UserFaker overrideId(int id) {
-        this.fakeUserCreator.id((long) id);
         return this;
     }
 
