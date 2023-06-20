@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.authorization.controller;
 
 import com.odeyalo.sonata.authorization.dto.AuthorizationResponse;
+import com.odeyalo.sonata.authorization.dto.SuccessfulRegistrationResponse;
 import com.odeyalo.sonata.authorization.service.TokenBasedAuthenticatorFacade;
 import com.odeyalo.sonata.common.authentication.dto.LoginCredentials;
 import com.odeyalo.sonata.common.authentication.exception.LoginAuthenticationFailedException;
@@ -28,5 +29,10 @@ public class AuthorizationController {
     public Mono<?> loginUser(@RequestBody LoginCredentials loginCredentials) throws LoginAuthenticationFailedException {
         return authenticatorFacade.authenticateAndCreateToken(loginCredentials.getEmail(), loginCredentials.getPassword())
                 .map(AuthorizationResponse::from);
+    }
+
+    @PostMapping("/register")
+    public Mono<?> registerUser() {
+        return Mono.just(SuccessfulRegistrationResponse.of("token", 3600));
     }
 }
