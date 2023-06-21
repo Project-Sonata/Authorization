@@ -15,7 +15,7 @@ Contract.make {
         body(
                 [
                         "email": "mikunakano@gmail.com",
-                        "password": "nakano",
+                        "password": "MikuNakano1488",
                         "birthdate": "2002-11-23",
                         "gender": "MALE",
                         "notification_enabled": true

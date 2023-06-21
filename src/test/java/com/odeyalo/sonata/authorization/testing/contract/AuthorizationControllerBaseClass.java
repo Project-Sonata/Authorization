@@ -47,7 +47,7 @@ public class AuthorizationControllerBaseClass {
     int port;
 
     String EMAIL = "mikunakano@gmail.com";
-    String PASSWORD = "nakano";
+    String PASSWORD = "MikuNakano1488";
     String USER_ID = "1";
 
     String TOKEN_VALUE = "MikuNakanoIsMyLove";
