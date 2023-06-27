@@ -5,12 +5,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.hateoas.mediatype.hal.Jackson2HalModule
 
 @Configuration
 open class ObjectMapperConfiguration {
 
     @Bean
-    open fun scopeLoaderObjectMapper(): ObjectMapper {
-        return ObjectMapper().registerModules(KotlinModule(), JavaTimeModule())
+    open fun objectMapper(): ObjectMapper {
+        return ObjectMapper().registerModules(KotlinModule(), JavaTimeModule(), Jackson2HalModule())
     }
 }
