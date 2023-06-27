@@ -17,6 +17,11 @@ public class ErrorDetailsAssert extends AbstractAssert<ErrorDetailsAssert, Error
         return new ErrorDetailsAssert(actual);
     }
 
+    public ErrorDetailsAssert equalToNull() {
+        isNull();
+        return this;
+    }
+
     public ErrorDetailsAssert codeEqualTo(String expectedCodeValue) {
         if (actual.getCode() == null && expectedCodeValue == null) {
             return this;
