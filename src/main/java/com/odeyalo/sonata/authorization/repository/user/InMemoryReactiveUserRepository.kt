@@ -1,20 +1,19 @@
 package com.odeyalo.sonata.authorization.repository.user
 
 import com.odeyalo.sonata.authorization.entity.InMemoryUser
-import com.odeyalo.sonata.authorization.entity.User
 import com.odeyalo.sonata.authorization.repository.RepositoryType
+import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 import java.util.concurrent.atomic.AtomicLong
-import java.util.function.Function
-import java.util.stream.Collectors
 
 /**
  * ReactiveUserRepository impl that stores users in Map
  */
-class InMemoryReactiveUserRepository : ReactiveUserRepository<InMemoryUser> {
+@Repository
+open class InMemoryReactiveUserRepository : ReactiveUserRepository<InMemoryUser> {
     private val storeById: ConcurrentMap<Long, InMemoryUser>
     private val storeByUsername: ConcurrentMap<String, Long>
     private val idHolder: AtomicLong = AtomicLong()
@@ -38,7 +37,7 @@ class InMemoryReactiveUserRepository : ReactiveUserRepository<InMemoryUser> {
         idHolder.set(store.size.toLong())
     }
 
-    override fun findUserByUsername(username: String): Mono<User> {
+    override fun findUserByUsername(username: String): Mono<InMemoryUser> {
         return Mono.justOrEmpty(storeByUsername[username])
             .flatMap { id ->
                 return@flatMap Mono.justOrEmpty(storeById[id])
