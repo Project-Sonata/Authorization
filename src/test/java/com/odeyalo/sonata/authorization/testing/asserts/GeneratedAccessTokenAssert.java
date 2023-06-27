@@ -12,7 +12,6 @@ public class GeneratedAccessTokenAssert extends AbstractAssert<GeneratedAccessTo
         super(actual, GeneratedAccessTokenAssert.class);
     }
 
-    // todo: Create asserts and finish tests
     protected GeneratedAccessTokenAssert(GeneratedAccessToken generatedAccessToken, Class<?> selfType) {
         super(generatedAccessToken, selfType);
     }
