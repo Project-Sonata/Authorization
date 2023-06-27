@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
  */
 interface PersistentUserOperations<T : User> : BasicPersistentOperations<T, Long> {
 
-    fun findUserByUsername(username: String): Mono<User>
+    fun findUserByUsername(username: String): Mono<T>
 
     fun deleteUserByUsername(username: String): Mono<Void>
 }
