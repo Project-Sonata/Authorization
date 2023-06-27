@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.authorization.testing.contract;
 
+import com.odeyalo.sonata.authorization.AuthorizationApplication;
 import com.odeyalo.sonata.authorization.controller.TokenController;
 import com.odeyalo.sonata.authorization.entity.InMemoryAccessToken;
 import com.odeyalo.sonata.authorization.service.token.access.AccessTokenManager;
@@ -29,7 +30,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * Base class for Spring contract that using {@link TokenController}
  */
 @AutoConfigureMessageVerifier
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(classes = AuthorizationApplication.class, webEnvironment = RANDOM_PORT)
 @TestInstance(PER_CLASS)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class TokenControllerBaseClass {

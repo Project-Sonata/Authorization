@@ -21,6 +21,7 @@
         <kotlin.version>1.8.21</kotlin.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
     </properties>
 
     <distributionManagement>
@@ -66,7 +67,7 @@
         <dependency>
             <groupId>com.odeyalo.sonata.suite</groupId>
             <artifactId>reactive</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.2</version>
         </dependency>
 
         <dependency>
@@ -75,6 +76,11 @@
             <optional>true</optional>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-contract-wiremock</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -114,6 +120,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.github.javafaker</groupId>
+            <artifactId>javafaker</artifactId>
+            <version>1.0.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bom</artifactId>
             <version>1.0.0</version>
@@ -138,7 +151,17 @@
             <artifactId>opentelemetry-exporter-zipkin</artifactId>
             <version>1.0.0</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.5.3.Final</version>
+        </dependency>
     </dependencies>
 
 
@@ -176,9 +199,21 @@
                 <extensions>true</extensions>
                 <configuration>
                     <testMode>EXPLICIT</testMode>
-                    <baseClassForTests>
-                        com.odeyalo.sonata.authorization.testing.contract.TokenControllerBaseClass
-                    </baseClassForTests>
+                    <baseClassMappings>
+                        <baseClassMapping>
+                            <contractPackageRegex>.*authorization.*</contractPackageRegex>
+                            <baseClassFQN>
+                                com.odeyalo.sonata.authorization.testing.contract.AuthorizationControllerBaseClass
+                            </baseClassFQN>
+                        </baseClassMapping>
+
+                        <baseClassMapping>
+                            <contractPackageRegex>.*token.*</contractPackageRegex>
+                            <baseClassFQN>
+                                com.odeyalo.sonata.authorization.testing.contract.TokenControllerBaseClass
+                            </baseClassFQN>
+                        </baseClassMapping>
+                    </baseClassMappings>
                 </configuration>
 
                 <dependencies>
@@ -190,6 +225,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
 
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -247,6 +283,31 @@
                         </goals>
                     </execution>
                 </executions>
+
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${org.mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <dependency>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </dependency>
+                    </annotationProcessorPaths>
+                    <compilerArgs>
+                        <compilerArg>
+                            -Amapstruct.defaultComponentModel=spring
+                        </compilerArg>
+                    </compilerArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>

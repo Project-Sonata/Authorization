@@ -1,0 +1,37 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/auth/signup",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.email",
+          "equalTo": "mikunakano@gmail.com"
+        }
+      },
+      {
+        "matchesJsonPath": {
+          "expression": "$.password",
+          "equalTo": "HelloWorld123"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "message": "To confirm your email we sent message to your email. Check it out",
+      "_links": {
+        "self": {
+          "href": "https://sonataproject.com/api/v1/auth/signup"
+        },
+        "confirmation_url": {
+          "href": "https://sonataproject.com/api/v1/auth/email/verify"
+        }
+      }
+    }
+  }
+}

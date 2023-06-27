@@ -9,6 +9,12 @@ import java.util.Set;
  */
 public interface User extends BaseEntity {
     /**
+     * An unique username. In most cases email
+     * @return - unique username
+     */
+    String getUsername();
+
+    /**
      * Granted authorities associated with this user
      * @return - granted authorities
      */

@@ -28,7 +28,7 @@ public class DefaultTokenBasedAuthenticatorFacade implements TokenBasedAuthentic
     public Mono<AccessToken> authenticateAndCreateToken(String username, String password) {
         return authenticationProvider.obtainAuthentication(username, password)
                 .flatMap(result -> manager.createToken(new InMemoryUser(Long.valueOf(result.getUserInfo().getId()), "key",
-                        System.currentTimeMillis(), new HashSet<>(result.getAuthorities()), "user")))
+                        System.currentTimeMillis(), result.getUserInfo().getEmail(), new HashSet<>(result.getAuthorities()), "user")))
                 .onErrorMap(ex -> true, ex -> ex);
     }
 }
