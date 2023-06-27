@@ -1,10 +1,14 @@
 package com.odeyalo.sonata.authorization.support.scope
 
-abstract class AbstractScope(
-    private val name: String,
-    private val description: String,
+abstract class AbstractScope(private val name: String,
+                             private val description: String,
+                             supportedRoles: Set<String>) : Scope {
+
     private val supportedRoles: Set<String>
-) : Scope {
+
+    init {
+        this.supportedRoles = supportedRoles.map { sc -> sc.lowercase() }.toSet()
+    }
 
     override fun getName(): String {
         return name
