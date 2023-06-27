@@ -2,49 +2,36 @@ package com.odeyalo.sonata.authorization.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.odeyalo.sonata.authorization.dto.SuccessfulRegistrationResponse;
+import com.odeyalo.sonata.authorization.dto.RegistrationFormDto;
+import com.odeyalo.sonata.authorization.dto.RegistrationResultResponseDto;
 import com.odeyalo.sonata.authorization.testing.asserts.ErrorDetailsAssert;
-import com.odeyalo.sonata.authorization.testing.asserts.SuccessfulRegistrationResponseAssert;
-import com.odeyalo.sonata.common.authentication.dto.request.UserRegistrationInfo;
+import com.odeyalo.sonata.authorization.testing.asserts.RegistrationResultResponseDtoAssert;
+import com.odeyalo.sonata.authorization.testing.faker.RegistrationFormFaker;
 import com.odeyalo.sonata.common.shared.ErrorDetails;
 import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
  * Tests for '/authorization/register' endpoint
  */
+@AutoConfigureWireMock(port = 0)
 class RegistrationEndpointAuthorizationControllerTest extends AuthorizationControllerTest {
     @Autowired
     WebTestClient webTestClient;
     @Autowired
     ObjectMapper objectMapper;
 
-    Logger logger = LoggerFactory.getLogger(AuthorizationController.class);
-
-    @Value("${sonata.security.token.opaque.lifetime.ms:1000000}")
-    Long tokenLifeTimeSeconds;
-
     String REGISTER_USER_ENDPOINT = "/authorization/register";
-
-    @BeforeAll
-    void setup() {
-        tokenLifeTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(tokenLifeTimeSeconds);
-        logger.info("Lifetime of the token in seconds: {}", tokenLifeTimeSeconds);
-    }
 
     @Nested
     class UserRegistrationWithValidInfo {
@@ -68,40 +55,42 @@ class RegistrationEndpointAuthorizationControllerTest extends AuthorizationContr
         }
 
         @Test
-        @DisplayName("Register the user with valid registration info and expect access token in response body")
+        @DisplayName("Register the user with valid registration info and null error details since there was no errors")
         void registerUserWithValidRegistrationInfo_andExpectAccessTokenInResponse() throws Exception {
             // when
             WebTestClient.ResponseSpec exchange = prepareAndSendValidRegistrationInfo();
 
             // then
-            SuccessfulRegistrationResponse response = exchange.expectBody(SuccessfulRegistrationResponse.class)
+            RegistrationResultResponseDto response = exchange.expectBody(RegistrationResultResponseDto.class)
                     .returnResult().getResponseBody();
 
-            SuccessfulRegistrationResponseAssert.from(response)
-                    .accessTokenNotNull();
+            RegistrationResultResponseDtoAssert.from(response)
+                    .errorDetails()
+                    .equalToNull();
         }
 
         @Test
-        @DisplayName("Register the user with valid registration info and expect expires_in field in json body")
-        void registerWithValidRegistrationInfo_andExpectExpiresInToBeEqualToPropertyInProperties() throws Exception {
+        @DisplayName("Register the user with valid registration info and expect PENDING_CONFIRMATION result type")
+        void registerWithValidRegistrationInfo_andExpectPendingConfirmationResultType() throws Exception {
             WebTestClient.ResponseSpec exchange = prepareAndSendValidRegistrationInfo();
             // then
-            SuccessfulRegistrationResponse responseBody = exchange.expectBody(SuccessfulRegistrationResponse.class)
+            RegistrationResultResponseDto responseBody = exchange.expectBody(RegistrationResultResponseDto.class)
                     .returnResult().getResponseBody();
 
-            SuccessfulRegistrationResponseAssert.from(responseBody)
-                    .expiresInEqualTo(tokenLifeTimeSeconds);
+            RegistrationResultResponseDtoAssert.from(responseBody)
+                    .pendingConfirmation();
         }
 
         @NotNull
         private WebTestClient.ResponseSpec prepareAndSendValidRegistrationInfo() throws JsonProcessingException {
             String email = "mikunakano@gmail.com", password = "HelloWorld123";
 
-            UserRegistrationInfo registrationInfo = UserRegistrationInfo.builder()
-                    .email(email)
+            RegistrationFormDto registrationInfo = RegistrationFormDto.builder()
+                    .username(email)
                     .password(password)
+                    .gender(RegistrationFormFaker.Gender.FEMALE)
                     .birthdate(LocalDate.of(2002, Month.DECEMBER, 3))
-                    .notificationEnabled(false)
+                    .enableNotification(false)
                     .build();
 
             String jsonBody = objectMapper.writeValueAsString(registrationInfo);
@@ -156,14 +145,12 @@ class RegistrationEndpointAuthorizationControllerTest extends AuthorizationContr
         void expectErrorDetailsWithSolution_IfPasswordIsInvalid() throws Exception {
             WebTestClient.ResponseSpec response = prepareAndSendInvalidRegistrationInfoRequest();
             // then
-            ErrorDetails details = response.expectBody(ErrorDetails.class).returnResult().getResponseBody();
+            ErrorDetails details = response.expectBody(ErrorDetails.class)
+                    .returnResult().getResponseBody();
 
             ErrorDetailsAssert.from(details)
                     .solutionEqualTo("To fix the problem - input the correct password with required format");
         }
-
-
-
 
         private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest() throws JsonProcessingException {
             return prepareAndSendInvalidRegistrationInfoRequest(info -> info);
@@ -171,18 +158,20 @@ class RegistrationEndpointAuthorizationControllerTest extends AuthorizationContr
 
         /**
          * Prepares the invalid registration info and send the request to server
+         *
          * @param enhancer - function to customize the UserRegistrationInfo
          * @return - result of the request
          * @throws JsonProcessingException - if json can't be build
          */
-        private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest(Function<UserRegistrationInfo, UserRegistrationInfo> enhancer) throws JsonProcessingException {
-            String email = "invalid", password = "invalid";
+        private WebTestClient.ResponseSpec prepareAndSendInvalidRegistrationInfoRequest(Function<RegistrationFormDto, RegistrationFormDto> enhancer) throws JsonProcessingException {
+            String email = "invalid@gmail.com", password = "invalid";
 
-            UserRegistrationInfo registrationInfo = UserRegistrationInfo.builder()
-                    .email(email)
+            RegistrationFormDto registrationInfo = RegistrationFormDto.builder()
+                    .username(email)
                     .password(password)
                     .birthdate(LocalDate.of(2002, Month.DECEMBER, 3))
-                    .notificationEnabled(false)
+                    .gender(RegistrationFormFaker.Gender.MALE)
+                    .enableNotification(false)
                     .build();
 
             registrationInfo = enhancer.apply(registrationInfo);
