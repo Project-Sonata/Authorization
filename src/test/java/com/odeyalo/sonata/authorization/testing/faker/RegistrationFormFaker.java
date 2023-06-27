@@ -79,6 +79,9 @@ public class RegistrationFormFaker {
         return overrideEnableNotification(true);
     }
 
+    public RegistrationForm build() {
+        return creator.create();
+    }
 
     @Getter
     @Setter
@@ -99,6 +102,5 @@ public class RegistrationFormFaker {
         public static final String MALE = "MALE";
         public static final String FEMALE = "FEMALE";
         public static final String NONE = "NONE";
-
     }
 }
