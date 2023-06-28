@@ -1,11 +1,13 @@
 package com.odeyalo.sonata.authorization.controller;
 
 import com.odeyalo.sonata.authorization.dto.AuthorizationResponse;
+import com.odeyalo.sonata.authorization.dto.RegistrationConfirmationDataDto;
 import com.odeyalo.sonata.authorization.dto.RegistrationFormDto;
 import com.odeyalo.sonata.authorization.dto.RegistrationResultResponseDto;
 import com.odeyalo.sonata.authorization.service.TokenBasedAuthenticatorFacade;
 import com.odeyalo.sonata.authorization.service.registration.RegistrationForm;
 import com.odeyalo.sonata.authorization.service.registration.RegistrationProvider;
+import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationData;
 import com.odeyalo.sonata.authorization.support.mappers.RegistrationResultResponseDtoMapper;
 import com.odeyalo.sonata.common.authentication.dto.LoginCredentials;
 import com.odeyalo.sonata.common.authentication.exception.LoginAuthenticationFailedException;
@@ -51,5 +53,10 @@ public class AuthorizationController {
                     RegistrationResultResponseDto responseBody = mapper.from(result);
                     return Mono.just(responseBody);
                 });
+    }
+
+    @PostMapping("/register/confirm")
+    public Mono<?> confirmUserRegistration(@RequestBody RegistrationConfirmationDataDto data) {
+        return Mono.empty();
     }
 }
