@@ -9,8 +9,10 @@
     },
     "bodyPatterns": [
       {
-        "matchesJsonPath": "$.code",
-        "equalTo": "900"
+        "matchesJsonPath": {
+          "expression": "$.code",
+          "equalTo": "900"
+        }
       }
     ]
   },
