@@ -47,7 +47,9 @@ public class RegistrationConfirmationEndpointAuthorizationControllerTest extends
         @DisplayName("Expect response body that can be parsed")
         void expectBodyToBeParsed() throws Exception {
             WebTestClient.ResponseSpec exchange = prepareAndSendValidRegistrationConfirmationData();
-            exchange.expectBody(SuccessfulRegistrationConfirmationDto.class);
+            SuccessfulRegistrationConfirmationDto responseBody = exchange.expectBody(SuccessfulRegistrationConfirmationDto.class)
+                    .returnResult().getResponseBody();
+            assertNotNull(responseBody, "The body cannot be null and must be parsed!");
         }
 
         @Test
