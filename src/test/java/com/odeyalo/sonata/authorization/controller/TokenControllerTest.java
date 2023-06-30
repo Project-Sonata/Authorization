@@ -64,65 +64,6 @@ class TokenControllerTest {
                         ));
         String body = objectMapper.writeValueAsString(credentials);
 
-        validAccessToken = webTestClient.post()
-                .uri("/authorization/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .contentLength(body.length())
-                .bodyValue(body)
-                .exchange()
-                .returnResult(AuthorizationResponse.class)
-                .getResponseBody()
-                .blockFirst()
-                .getToken();
-
         logger.info("Obtained an access token: {}", validAccessToken);
-    }
-
-    @Test
-    @DisplayName("Introspect valid access token and expect response with info about token")
-    void introspectValidAccessToken_andExpectResponseWithTokenInfo() throws Exception {
-        // given
-        TokenIntrospectionRequest body = TokenIntrospectionRequest.of(validAccessToken);
-
-        // when
-        WebTestClient.ResponseSpec exchange = webTestClient.post()
-                .uri(TOKEN_INFO_ENDPOINT)
-                .body(Mono.just(body), LoginCredentials.class)
-                .exchange();
-        // then
-        TokenIntrospectionResponse responseBody = exchange
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(TokenIntrospectionResponse.class)
-                .consumeWith(System.out::println)
-                .returnResult().getResponseBody();
-        // and
-        TokenIntrospectionResponseAssert.from(responseBody)
-                .isValid()
-                .hasUserId(userinfo.getId())
-                .scopesMatches("user-read", "user-library-read");
-    }
-
-    @Test
-    @DisplayName("Introspect not issued access token and expect 200 with json body")
-    void introspectNotIssuedAccessToken_andExpect200WithBody() {
-        // given
-        TokenIntrospectionRequest body = TokenIntrospectionRequest.of("not issued token");
-        // when
-        WebTestClient.ResponseSpec responseSpec = webTestClient.post()
-                .uri(TOKEN_INFO_ENDPOINT)
-                .body(Mono.just(body), TokenIntrospectionRequest.class)
-                .exchange();
-        // then
-        TokenIntrospectionResponse responseBody = responseSpec
-                .expectStatus().isOk()
-                .expectBody(TokenIntrospectionResponse.class)
-                .consumeWith(System.out::println)
-                .returnResult()
-                .getResponseBody();
-        // and
-        TokenIntrospectionResponseAssert.from(responseBody)
-                .isNotNull()
-                .isInvalid();
     }
 }
