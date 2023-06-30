@@ -1,0 +1,33 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPattern": "/auth/confirm/email",
+    "headers": {
+      "Content-Type": {
+        "equalTo": "application/json"
+      }
+    },
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.code",
+          "equalTo": "123"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "is_confirmed": true,
+      "message": "The email has been successfully confirmed",
+      "user_info": {
+        "id": 1,
+        "email": "mikunakano@gmail.com"
+      }
+    }
+  }
+}

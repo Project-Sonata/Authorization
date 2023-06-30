@@ -26,6 +26,6 @@ public class RemoteRegistrationConfirmationResult {
     }
 
     public static RemoteRegistrationConfirmationResult confirmationFailed(ErrorDetails errorDetails) {
-        return of(true, null, errorDetails);
+        return of(false, null, errorDetails);
     }
 }

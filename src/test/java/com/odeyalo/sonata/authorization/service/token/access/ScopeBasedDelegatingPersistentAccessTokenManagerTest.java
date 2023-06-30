@@ -1,7 +1,7 @@
 package com.odeyalo.sonata.authorization.service.token.access;
 
 import com.odeyalo.sonata.authorization.entity.AccessToken;
-import com.odeyalo.sonata.authorization.entity.InMemoryUser;
+import com.odeyalo.sonata.authorization.service.authentication.Subject;
 import com.odeyalo.sonata.authorization.support.scope.CommonScope;
 import com.odeyalo.sonata.authorization.support.scope.Scope;
 import com.odeyalo.sonata.authorization.testing.asserts.AccessTokenAssert;
@@ -21,20 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 class ScopeBasedDelegatingPersistentAccessTokenManagerTest {
 
-    private final InMemoryUser user = InMemoryUser.builder()
-            .id(1L)
-            .creationTime(System.currentTimeMillis())
+    private final Subject user = Subject.builder()
+            .id("1")
             .authorities(Set.of(new SimpleGrantedAuthority("USER")))
             .role("USER")
-            .businessKey("user-key")
             .build();
 
-    private final InMemoryUser admin = InMemoryUser.builder()
-            .id(2L)
-            .creationTime(System.currentTimeMillis())
+    private final Subject admin = Subject.builder()
+            .id("2")
             .authorities(Set.of(new SimpleGrantedAuthority("ADMIN")))
             .role("ADMIN")
-            .businessKey("admin-key")
             .build();
 
     private final List<Scope> scopes = List.of(

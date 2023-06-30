@@ -2,8 +2,10 @@ package com.odeyalo.sonata.authorization.testing.contract;
 
 import com.odeyalo.sonata.authorization.AuthorizationApplication;
 import com.odeyalo.sonata.authorization.controller.AuthorizationController;
+import com.odeyalo.sonata.authorization.entity.Role;
 import com.odeyalo.sonata.authorization.service.authentication.SonataAuthentication;
 import com.odeyalo.sonata.authorization.service.authentication.SonataAuthenticationProvider;
+import com.odeyalo.sonata.authorization.service.registration.BasicUserInfo;
 import com.odeyalo.sonata.authorization.service.token.access.GeneratedAccessToken;
 import com.odeyalo.sonata.authorization.service.token.access.generator.AccessTokenGenerator;
 import com.odeyalo.sonata.common.authentication.dto.UserInfo;
@@ -58,11 +60,11 @@ public class AuthorizationControllerBaseClass {
     @BeforeEach
     void setup() {
         RestAssured.baseURI = "http://localhost:" + port;
-        UserInfo info = UserInfo.of(USER_ID, "");
+        BasicUserInfo info = BasicUserInfo.of(USER_ID, "");
 
         when(authenticationProvider.obtainAuthentication(EMAIL, PASSWORD))
                 .thenReturn(Mono.just(
-                        new SonataAuthentication(info, PASSWORD, info, Set.of(new SimpleGrantedAuthority("USER")))
+                        new SonataAuthentication(info, PASSWORD, info, Role.USER, Set.of(new SimpleGrantedAuthority("USER")))
                 ));
 
         GeneratedAccessToken token = accessTokenGenerator.generateAccessToken(USER_ID, Map.of(SCOPES_CLAIM_NAME, SCOPES)).block();

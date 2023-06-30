@@ -2,6 +2,7 @@ package com.odeyalo.sonata.authorization.service.registration.remote;
 
 import com.odeyalo.sonata.authorization.service.registration.RegistrationForm;
 import com.odeyalo.sonata.authorization.service.registration.RegistrationResult;
+import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationData;
 import com.odeyalo.sonata.authorization.testing.asserts.ErrorDetailsAssert;
 import com.odeyalo.sonata.authorization.testing.faker.RegistrationFormFaker;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.context.annotation.Import;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.TestPropertySource;
 
 import static com.odeyalo.sonata.authorization.service.registration.RegistrationResult.Type.FAILED;
@@ -29,8 +32,8 @@ class ReactiveFeignClientRemoteServiceUserRegistrarTest {
     @Autowired
     ReactiveFeignClientRemoteServiceUserRegistrar remoteServiceUserRegistrar;
 
-
     @Nested
+    @Import(SharedReference.class)
     class RegistrationWithValidInfo {
         @Test
         @DisplayName("Expect not null registration result")
@@ -93,6 +96,7 @@ class ReactiveFeignClientRemoteServiceUserRegistrarTest {
     }
 
     @Nested
+    @Import(SharedReference.class)
     class RegistrationWithInvalidInfo {
         @Test
         @DisplayName("Expect not null result")
@@ -165,4 +169,149 @@ class ReactiveFeignClientRemoteServiceUserRegistrarTest {
         }
     }
 
+    @Nested
+    @Import(SharedReference.class)
+    class ConfirmationWithValidInfo {
+        public static final String VALID_CONFIRMATION_DATA = "123";
+
+        @Test
+        @DisplayName("Expect not null as result")
+        void expectNotNull() {
+            RegistrationConfirmationData data = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(data).block();
+            assertNotNull(result, "Result should never be null!");
+        }
+
+        @Test
+        @DisplayName("Expect confirmed flag set to true")
+        void expectConfirmedFlagIsTrue() {
+            RegistrationConfirmationData data = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(data).block();
+            assertTrue(result.isConfirmed(), "If data was valid then confirmed flag must be set to true!");
+        }
+
+        @Test
+        @DisplayName("Expect failed flag set to false")
+        void expectFailedFlagIsFalse() {
+            RegistrationConfirmationData data = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(data).block();
+            assertFalse(result.isFailed(), "If data was valid then 'failed' flag must be set to false!");
+        }
+
+        @Test
+        @DisplayName("Expect null error details")
+        void expectNullErrorDetails() {
+            RegistrationConfirmationData form = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertNull(result.getErrorDetails(), "Error details must be null, if registration was success!");
+        }
+
+        @Test
+        @DisplayName("Expect not null user info")
+        void expectNotNullUserInfo() {
+            RegistrationConfirmationData form = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertNotNull(result.getUserInfo(), "User info cannot be null if confirmation was success!");
+        }
+
+        @Test
+        @DisplayName("Expect ID in user info")
+        void expectIDInUserInfo() {
+            RegistrationConfirmationData form = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertEquals("1", result.getUserInfo().id(), "User info must contain ID if confirmation was success!");
+        }
+
+        @Test
+        @DisplayName("Expect ID in user info")
+        void expectUsernameInUserInfo() {
+            RegistrationConfirmationData form = prepareValidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertEquals("mikunakano@gmail.com", result.getUserInfo().username(), "User info must contain username if confirmation was success!");
+        }
+
+        private RegistrationConfirmationData prepareValidConfirmationData() {
+            return RegistrationConfirmationData.of(VALID_CONFIRMATION_DATA);
+        }
+    }
+
+    @Nested
+    @Import(SharedReference.class)
+    class ConfirmationWithInvalidInfo {
+        public static final String INVALID_CONFIRMATION_DATA = "900";
+
+        @Test
+        @DisplayName("Expect not null as result")
+        void expectNotNull() {
+            RegistrationConfirmationData data = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(data).block();
+            assertNotNull(result, "Result should never be null!");
+        }
+
+        @Test
+        @DisplayName("Expect confirmed flag set to true")
+        void expectConfirmedFlagIsTrue() {
+            RegistrationConfirmationData data = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(data).block();
+            assertFalse(result.isConfirmed(), "If data was invalid then confirmed flag must be set to false!");
+        }
+
+        @Test
+        @DisplayName("Expect failed flag set to false")
+        void expectFailedFlagIsTrue() {
+            RegistrationConfirmationData data = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(data).block();
+            assertTrue(result.isFailed(), "If data was invalid then 'failed' flag must be set to true!");
+        }
+
+        @Test
+        @DisplayName("Expect null user info")
+        void expectNullUserInfo() {
+            RegistrationConfirmationData form = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertNull(result.getUserInfo(), "User info must be null if data is invalid!");
+        }
+
+        @Test
+        @DisplayName("Expect error details to be not null")
+        void expectNotNullErrorDetails() {
+            RegistrationConfirmationData form = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertNotNull(result.getErrorDetails(), "Error details must be presented if invalid data was used!");
+        }
+
+        @Test
+        @DisplayName("Expect error details with 'invalid_confirmation_data' code")
+        void expectErrorCodeToBeValid() {
+            RegistrationConfirmationData form = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertEquals("invalid_confirmation_data", result.getErrorDetails().getCode(), "Error code must be valid!!");
+        }
+
+        @Test
+        @DisplayName("Expect error details with valid description")
+        void expectErrorDescriptionToBeValid() {
+            RegistrationConfirmationData form = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertEquals("Data is invalid or expired", result.getErrorDetails().getDescription(), "Error description must be valid!!");
+        }
+
+        @Test
+        @DisplayName("Expect error details with valid solution")
+        void expectErrorSolutionToBeValid() {
+            RegistrationConfirmationData form = prepareInvalidConfirmationData();
+            RemoteRegistrationConfirmationResult result = remoteServiceUserRegistrar.confirmRegistration(form).block();
+            assertEquals("To fix the problem - input correct confirmation data or regenerate it", result.getErrorDetails().getPossibleSolution(), "Error possible solution must be valid!!");
+        }
+
+        private RegistrationConfirmationData prepareInvalidConfirmationData() {
+            return RegistrationConfirmationData.of(INVALID_CONFIRMATION_DATA);
+        }
+    }
 }
+
+/**
+ * Used to share same spring context between @Nested classes
+ */
+@Component
+class SharedReference {}

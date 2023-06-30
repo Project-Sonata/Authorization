@@ -3,6 +3,7 @@ package com.odeyalo.sonata.authorization.service.token.access;
 import com.odeyalo.sonata.authorization.entity.AccessToken;
 import com.odeyalo.sonata.authorization.entity.User;
 import com.odeyalo.sonata.authorization.repository.storage.AccessTokenStorage;
+import com.odeyalo.sonata.authorization.service.authentication.Subject;
 import com.odeyalo.sonata.authorization.service.token.access.generator.AccessTokenGenerator;
 import com.odeyalo.sonata.authorization.support.scope.SonataScopeProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,11 +38,11 @@ public class ScopeBasedDelegatingPersistentAccessTokenManager implements AccessT
     }
 
     @Override
-    public Mono<AccessToken> createToken(User user) {
-        return scopeProvider.getScopesByRole(user.getRole()).collectList()
+    public Mono<AccessToken> createToken(Subject subject) {
+        return scopeProvider.getScopesByRole(subject.getRole()).collectList()
                 .flatMap(scopes -> {
                     Map<String, Object> claims = Map.of(SCOPES_CLAIM_NAME, scopes);
-                    return accessTokenGenerator.generateAccessToken(String.valueOf(user.getId()), claims);
+                    return accessTokenGenerator.generateAccessToken(String.valueOf(subject.getId()), claims);
                 })
                 .map(GeneratedAccessTokenAdapter::new)
             .flatMap(storage::save);

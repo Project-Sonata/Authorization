@@ -22,6 +22,10 @@ public class RegistrationConfirmationResult {
     }
 
     public static RegistrationConfirmationResult confirmationFailed(ErrorDetails errorDetails) {
-        return of(true, null, errorDetails);
+        return of(false, null, errorDetails);
+    }
+
+    public boolean isFailed() {
+        return !isConfirmed();
     }
 }
