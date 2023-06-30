@@ -11,5 +11,5 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TokenDto {
     String value;
-    int lifetime;
+    long lifetime;
 }
