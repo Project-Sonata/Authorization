@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@AutoConfigureWireMock(port = 1111)
+@AutoConfigureWireMock(port = 0)
 @TestPropertySource(locations = "classpath:application-test.properties")
 class ReactiveFeignClientRemoteServiceUserRegistrarTest {
 
