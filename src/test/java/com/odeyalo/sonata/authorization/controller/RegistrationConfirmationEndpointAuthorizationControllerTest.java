@@ -15,8 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import static com.odeyalo.sonata.authorization.dto.SuccessfulRegistrationConfirmationDto.ACCESS_TOKEN_KEY;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureWireMock(port = 0)
 public class RegistrationConfirmationEndpointAuthorizationControllerTest extends AuthorizationControllerTest {
@@ -120,7 +119,16 @@ public class RegistrationConfirmationEndpointAuthorizationControllerTest extends
         @DisplayName("Expect response body to be parsable")
         void expectParsableBodyInResponse() throws Exception {
             WebTestClient.ResponseSpec exchange = prepareAndSendInvalidConfirmationData();
-            exchange.expectBody(FailedRegistrationConfirmationDto.class);
+            FailedRegistrationConfirmationDto body = exchange.expectBody(FailedRegistrationConfirmationDto.class).returnResult().getResponseBody();
+            assertNotNull(body);
+        }
+
+        @Test
+        @DisplayName("Expect 'confirmed' in body be set to false")
+        void expectConfirmedFieldSetToFalse() throws Exception {
+            WebTestClient.ResponseSpec exchange = prepareAndSendInvalidConfirmationData();
+            FailedRegistrationConfirmationDto body = exchange.expectBody(FailedRegistrationConfirmationDto.class).returnResult().getResponseBody();
+            assertFalse(body.isConfirmed());
         }
 
         public WebTestClient.ResponseSpec prepareAndSendInvalidConfirmationData() throws JsonProcessingException {
