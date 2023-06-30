@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.authorization.exception;
 
+import com.odeyalo.sonata.authorization.dto.FailedRegistrationConfirmationDto;
 import com.odeyalo.sonata.common.authentication.exception.InvalidCredentialsException;
 import com.odeyalo.sonata.common.authentication.exception.RegistrationFailedException;
 import com.odeyalo.sonata.common.shared.ErrorDetails;
@@ -18,5 +19,11 @@ public class GlobalErrorWebExceptionHandler {
     @ExceptionHandler(RegistrationFailedException.class)
     public ResponseEntity<ErrorDetails> handleRegistrationFailedException(RegistrationFailedException e) {
         return ResponseEntity.badRequest().body(e.getErrorDetails());
+    }
+
+    @ExceptionHandler(RegistrationConfirmationFailedException.class)
+    public ResponseEntity<FailedRegistrationConfirmationDto> handleRegistrationConfirmationFailedException(RegistrationConfirmationFailedException ex) {
+        FailedRegistrationConfirmationDto dto = FailedRegistrationConfirmationDto.failed();
+        return ResponseEntity.badRequest().body(dto);
     }
 }
