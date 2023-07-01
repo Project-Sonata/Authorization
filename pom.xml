@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.odeyalo.sonata</groupId>
     <artifactId>authorization</artifactId>
-    <version>1.0.0</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>authorization</name>
     <description>authorization</description>
 
@@ -217,6 +217,7 @@
                     </baseClassMappings>
 
                     <contractsRepositoryUrl>git://https://github.com/Project-Sonata/Sonata-Contracts.git</contractsRepositoryUrl>
+                    <failOnNoContracts>false</failOnNoContracts>
                     <contractsMode>REMOTE</contractsMode>
                     <contractsRepositoryUsername>${GITHUB_USERNAME}</contractsRepositoryUsername>
                     <contractsRepositoryPassword>${GITHUB_PASSWORD}</contractsRepositoryPassword>
@@ -226,8 +227,16 @@
                         <artifactId>${project.artifactId}</artifactId>
                         <version>${project.version}</version>
                     </contractDependency>
-
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>Spring-contract</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>pushStubsToScm</goal>
+                        </goals>
+                    </execution>
+                </executions>
 
                 <dependencies>
                     <dependency>
@@ -257,15 +266,6 @@
                                 <source>target/generated-sources/annotations</source>
                             </sourceDirs>
                         </configuration>
-                    </execution>
-
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <!-- By default we will not push the stubs back to SCM,
-                            you have to explicitly add it as a goal -->
-                            <goal>pushStubsToScm</goal>
-                        </goals>
                     </execution>
 
                     <execution>
