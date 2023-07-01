@@ -43,6 +43,6 @@ public class TokenController {
     }
 
     private static long getExpiresIn(AccessToken token) {
-        return TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - TimeUnit.MILLISECONDS.toSeconds(token.getCreationTime());
+        return TimeUnit.MILLISECONDS.toSeconds(token.getExpirationTime()) - TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 }
