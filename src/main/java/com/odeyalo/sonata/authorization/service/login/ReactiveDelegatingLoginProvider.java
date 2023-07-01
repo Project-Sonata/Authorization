@@ -27,7 +27,9 @@ public class ReactiveDelegatingLoginProvider implements ReactiveLoginProvider {
                 .flatMap(sonataAuthentication -> {
                     Subject subject = createSubject(sonataAuthentication);
                     return authenticationManager.createAuthentication(subject);
-                });
+                })
+                .doOnError(System.out::println)
+                .onErrorMap(err -> true, err -> err);
     }
 
     private Subject createSubject(SonataAuthentication sonataAuthentication) {
