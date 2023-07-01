@@ -1,7 +1,6 @@
 package contracts.authorization
 
 import org.springframework.cloud.contract.spec.Contract
-import org.springframework.http.MediaType
 
 Contract.make {
     description("Should return bad request if confirmation code is invalid")
@@ -11,7 +10,7 @@ Contract.make {
         url("/authorization/register/confirm")
 
         headers {
-            contentType(MediaType.APPLICATION_JSON_VALUE)
+            contentType("application/json")
         }
         body(
                 [
@@ -22,7 +21,7 @@ Contract.make {
     response {
         status BAD_REQUEST()
         headers {
-            contentType(MediaType.APPLICATION_JSON_VALUE)
+            contentType("application/json")
         }
         body(
                 [
