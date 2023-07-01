@@ -2,6 +2,7 @@ package com.odeyalo.sonata.authorization.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -13,6 +14,7 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SuccessfulRegistrationConfirmationDto extends RegistrationConfirmationDto {
     @JsonProperty("tokens")
+    @JsonUnwrapped
     TokensDto tokens;
 
     public static final String ACCESS_TOKEN_KEY = "access_token";
