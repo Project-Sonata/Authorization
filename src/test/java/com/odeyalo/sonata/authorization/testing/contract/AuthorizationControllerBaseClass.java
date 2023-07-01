@@ -8,7 +8,6 @@ import com.odeyalo.sonata.authorization.service.authentication.SonataAuthenticat
 import com.odeyalo.sonata.authorization.service.registration.BasicUserInfo;
 import com.odeyalo.sonata.authorization.service.token.access.GeneratedAccessToken;
 import com.odeyalo.sonata.authorization.service.token.access.generator.AccessTokenGenerator;
-import com.odeyalo.sonata.common.authentication.dto.UserInfo;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -17,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.cloud.contract.verifier.messaging.boot.AutoConfigureMessageVerifier;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.TestPropertySource;
 import reactor.core.publisher.Mono;
@@ -37,6 +37,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(classes = AuthorizationApplication.class, webEnvironment = RANDOM_PORT)
 @TestInstance(PER_CLASS)
 @TestPropertySource(locations = "classpath:application-test.properties")
+@AutoConfigureWireMock(port = 0)
 public class AuthorizationControllerBaseClass {
 
     @MockBean
@@ -60,6 +61,7 @@ public class AuthorizationControllerBaseClass {
     @BeforeEach
     void setup() {
         RestAssured.baseURI = "http://localhost:" + port;
+
         BasicUserInfo info = BasicUserInfo.of(USER_ID, "");
 
         when(authenticationProvider.obtainAuthentication(EMAIL, PASSWORD))

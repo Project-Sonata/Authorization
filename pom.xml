@@ -182,6 +182,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+
                 <configuration>
                     <excludes>
                         <exclude>
@@ -214,7 +215,28 @@
                             </baseClassFQN>
                         </baseClassMapping>
                     </baseClassMappings>
+
+                    <contractsRepositoryUrl>git://https://github.com/Project-Sonata/Sonata-Contracts.git</contractsRepositoryUrl>
+                    <failOnNoContracts>false</failOnNoContracts>
+                    <contractsMode>REMOTE</contractsMode>
+                    <contractsRepositoryUsername>${GITHUB_USERNAME}</contractsRepositoryUsername>
+                    <contractsRepositoryPassword>${GITHUB_PASSWORD}</contractsRepositoryPassword>
+
+                    <contractDependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>${project.artifactId}</artifactId>
+                        <version>${project.version}</version>
+                    </contractDependency>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>Spring-contract</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>pushStubsToScm</goal>
+                        </goals>
+                    </execution>
+                </executions>
 
                 <dependencies>
                     <dependency>
@@ -245,6 +267,7 @@
                             </sourceDirs>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>test-compile</id>
                         <phase>generate-test-sources</phase>

@@ -17,8 +17,6 @@ Contract.make {
         status OK()
         body(
                 valid: false,
-                user_id: null,
-                scope: null,
                 iat: 0,
                 expires_in: 0
         )

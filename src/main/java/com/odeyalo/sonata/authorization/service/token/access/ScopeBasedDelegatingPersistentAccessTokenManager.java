@@ -45,7 +45,7 @@ public class ScopeBasedDelegatingPersistentAccessTokenManager implements AccessT
                     return accessTokenGenerator.generateAccessToken(String.valueOf(subject.getId()), claims);
                 })
                 .map(GeneratedAccessTokenAdapter::new)
-            .flatMap(storage::save);
+                .flatMap(storage::save);
     }
 
     @Override

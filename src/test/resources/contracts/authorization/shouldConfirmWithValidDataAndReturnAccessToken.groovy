@@ -1,7 +1,6 @@
 package contracts.authorization
 
 import org.springframework.cloud.contract.spec.Contract
-import org.springframework.http.MediaType
 
 Contract.make {
     description("Should confirm the code and return access token")
@@ -11,7 +10,7 @@ Contract.make {
         url("/authorization/register/confirm")
 
         headers {
-            contentType(MediaType.APPLICATION_JSON_VALUE)
+            contentType("application/json")
         }
         body(
                 [
@@ -23,14 +22,14 @@ Contract.make {
     response {
         status OK()
         headers {
-            contentType(MediaType.APPLICATION_JSON_VALUE)
+            contentType("application/json")
         }
         body(
                 [
                         "confirmed": true,
                         "tokens"   : [
                                 "access_token": [
-                                        "value"     : "ILoveYouMiku",
+                                        "value"     : "MikuNakanoIsMyLove",
                                         "expires_in": 3600
                                 ]
                         ]
