@@ -15,12 +15,18 @@ Contract.make {
     }
     response {
         status OK()
+        headers {
+            contentType("application/json")
+        }
+
         body(
-                valid: true,
-                user_id: "1",
-                scope: "read write",
-                iat: anyInteger(),
-                expires_in: positiveInt()
-        )
+                [
+                        "valid"     : true,
+                        "user_id"   : "1",
+                        "scope"     : "read write",
+                        "iat"       : anyInteger(),
+                        "expires_in": positiveInt()
+
+                ])
     }
 }
