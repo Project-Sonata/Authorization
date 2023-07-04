@@ -15,10 +15,16 @@ Contract.make {
     }
     response {
         status OK()
+        headers {
+            contentType("application/json")
+        }
+
         body(
-                valid: false,
-                iat: 0,
-                expires_in: 0
+                [
+                        valid     : false,
+                        iat       : 0,
+                        expires_in: 0
+                ]
         )
     }
 }

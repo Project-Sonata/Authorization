@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.odeyalo.sonata</groupId>
     <artifactId>authorization</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>authorization</name>
     <description>authorization</description>
 
@@ -225,7 +225,6 @@
                     <contractDependency>
                         <groupId>${project.groupId}</groupId>
                         <artifactId>${project.artifactId}</artifactId>
-                        <version>${project.version}</version>
                     </contractDependency>
                 </configuration>
                 <executions>
