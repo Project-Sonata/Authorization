@@ -1,7 +1,7 @@
 package com.odeyalo.sonata.authorization.testing.asserts;
 
-import com.odeyalo.sonata.authorization.dto.TokenIntrospectionResponse;
 import com.odeyalo.sonata.authorization.support.scope.Scope;
+import com.odeyalo.sonata.common.authorization.TokenIntrospectionResponse;
 import org.assertj.core.api.AbstractAssert;
 
 import java.util.Arrays;
