@@ -24,8 +24,8 @@ Contract.make {
                         "valid"     : true,
                         "user_id"   : "1",
                         "scope"     : "read write",
-                        "iat"       : anyInteger(),
-                        "expires_in": positiveInt()
+                        "iat"       : anyPositiveInt(),
+                        "expires_in": anyPositiveInt()
 
                 ])
     }
