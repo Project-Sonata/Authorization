@@ -1,11 +1,10 @@
 package com.odeyalo.sonata.authorization.controller;
 
-import com.odeyalo.sonata.authorization.dto.TokenIntrospectionRequest;
-import com.odeyalo.sonata.authorization.dto.TokenIntrospectionResponse;
 import com.odeyalo.sonata.authorization.entity.AccessToken;
 import com.odeyalo.sonata.authorization.service.token.access.AccessTokenManager;
 import com.odeyalo.sonata.authorization.support.scope.Scope;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.odeyalo.sonata.common.authorization.TokenIntrospectionRequest;
+import com.odeyalo.sonata.common.authorization.TokenIntrospectionResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
