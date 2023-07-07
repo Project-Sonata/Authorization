@@ -15,9 +15,9 @@ import kotlin.test.assertEquals
  */
 class DefaultCacheableSonataScopeProviderTest {
     var scopes = listOf<Scope>(
-        CommonScope("read", "Read info", setOf(Role.USER.roleValue, Role.ADMIN.roleValue)),
-        CommonScope("write", "Write info", setOf(Role.USER.roleValue, Role.ADMIN.roleValue)),
-        CommonScope("delete", "Delete info", setOf(Role.ADMIN.roleValue))
+        CommonScope("read", "Read info", setOf(Role.USER.roleValue, Role.ADMIN.roleValue), Scope.Type.PUBLIC),
+        CommonScope("write", "Write info", setOf(Role.USER.roleValue, Role.ADMIN.roleValue), Scope.Type.PRIVATE),
+        CommonScope("delete", "Delete info", setOf(Role.ADMIN.roleValue), Scope.Type.PUBLIC)
     )
 
     @Test

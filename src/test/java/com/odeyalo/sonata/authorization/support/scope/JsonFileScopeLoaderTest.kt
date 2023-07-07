@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.authorization.support.scope
 
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.odeyalo.sonata.authorization.exception.ScopeLoadingFailedException
@@ -24,14 +25,14 @@ class JsonFileScopeLoaderTest {
     @DisplayName("Get all scopes from file and expect parsed JSON as flux")
     fun loadScopesFromJsonFile_andExpectFluxWith2ScopesToBeReturned() {
         // given
-        val testMapper: ObjectMapper = ObjectMapper().registerModule(KotlinModule())
+        val testMapper: ObjectMapper = ObjectMapper().registerModule(KotlinModule()).enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         val loader = JsonFileScopeLoader(testMapper, SCOPE_JSON_FILE_PATH)
         // when
         val scopesPublisher = loader.loadScopes();
         // then
         StepVerifier.create(scopesPublisher)
-            .expectNext(JsonScope("user-read", "Read user profile information", setOf("guest", "admin", "user")))
-            .expectNext(JsonScope("user-library-read", "Read user's saved music library", setOf("admin", "user")))
+            .expectNext(JsonScope("user-account-modify", "Read user profile information", setOf("guest", "admin", "user"), Scope.Type.PRIVATE))
+            .expectNext(JsonScope("user-library-read", "Read user's saved music library", setOf("admin", "user"), Scope.Type.PUBLIC))
             .expectComplete()
             .verify();
     }

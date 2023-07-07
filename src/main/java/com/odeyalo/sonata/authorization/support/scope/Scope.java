@@ -19,4 +19,11 @@ public interface Scope {
      * @return - true if the scope supported by this role, false otherwise
      */
     boolean supportsRole(String roleName);
+
+    Type getScopeType();
+
+    enum Type {
+        PRIVATE,
+        PUBLIC
+    }
 }

@@ -34,9 +34,9 @@ class ScopeBasedDelegatingPersistentAccessTokenManagerTest {
             .build();
 
     private final List<Scope> scopes = List.of(
-            new CommonScope("name1", "desc", Set.of("user", "admin")),
-            new CommonScope("name2", "desc2", Set.of("user", "admin")),
-            new CommonScope("name3", "desc3", Set.of("admin"))
+            new CommonScope("name1", "desc", Set.of("user", "admin"), Scope.Type.PRIVATE),
+            new CommonScope("name2", "desc2", Set.of("user", "admin"), Scope.Type.PUBLIC),
+            new CommonScope("name3", "desc3", Set.of("admin"), Scope.Type.PRIVATE)
     );
 
     private final List<Scope> onlyUserScopes = scopes.stream().filter(scope -> scope.supportsRole("user")).toList();
