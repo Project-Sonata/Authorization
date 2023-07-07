@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.authorization.config
 
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -13,5 +14,6 @@ open class ObjectMapperConfiguration {
     @Bean
     open fun objectMapper(): ObjectMapper {
         return ObjectMapper().registerModules(KotlinModule(), JavaTimeModule(), Jackson2HalModule())
+            .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
     }
 }

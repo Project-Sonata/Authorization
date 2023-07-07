@@ -6,6 +6,7 @@ import com.odeyalo.sonata.authorization.entity.InMemoryAccessToken;
 import com.odeyalo.sonata.authorization.service.token.access.AccessTokenManager;
 import com.odeyalo.sonata.authorization.service.token.access.ScopeBasedDelegatingPersistentAccessTokenManager;
 import com.odeyalo.sonata.authorization.support.scope.CommonScope;
+import com.odeyalo.sonata.authorization.support.scope.Scope;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -47,8 +48,8 @@ public class TokenControllerBaseClass {
     int port;
 
     List<CommonScope> scopes = List.of(
-            new CommonScope("read", "read something", Set.of("user")),
-            new CommonScope("write", "write something", Set.of("user"))
+            new CommonScope("user-account-modify", "Read and modify user account", Set.of("user"), Scope.Type.PRIVATE),
+            new CommonScope("write", "write something", Set.of("user"), Scope.Type.PUBLIC)
     );
 
     @BeforeEach

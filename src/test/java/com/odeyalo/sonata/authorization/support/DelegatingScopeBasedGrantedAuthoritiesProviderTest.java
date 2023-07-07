@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 class DelegatingScopeBasedGrantedAuthoritiesProviderTest {
     List<Scope> scopes = List.of(
-            new CommonScope("read", "Read info", Set.of(Role.USER.getRoleValue(), Role.ADMIN.getRoleValue())),
-            new CommonScope("write", "Write info", Set.of(Role.USER.getRoleValue(), Role.ADMIN.getRoleValue())),
-            new CommonScope("delete", "Delete info", Set.of(Role.ADMIN.getRoleValue()))
+            new CommonScope("read", "Read info", Set.of(Role.USER.getRoleValue(), Role.ADMIN.getRoleValue()), Scope.Type.PUBLIC),
+            new CommonScope("write", "Write info", Set.of(Role.USER.getRoleValue(), Role.ADMIN.getRoleValue()), Scope.Type.PRIVATE),
+            new CommonScope("delete", "Delete info", Set.of(Role.ADMIN.getRoleValue()), Scope.Type.PRIVATE)
     );
 
     DelegatingScopeBasedGrantedAuthoritiesProvider provider = new DelegatingScopeBasedGrantedAuthoritiesProvider(
