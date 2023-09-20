@@ -1,0 +1,35 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/auth/login",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.email",
+          "equalTo": "mikunakano@gmail.com"
+        }
+      },
+      {
+        "matchesJsonPath": {
+          "expression": "$.password",
+          "equalTo": "HelloWorld123"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "success": true,
+      "user_info": {
+        "id": "1",
+        "email": "mikunakano@gmail.com"
+      },
+      "type": "LOGIN_COMPLETED",
+      "available_methods": []
+    }
+  }
+}
