@@ -1,10 +1,9 @@
 package com.odeyalo.sonata.authorization.service.authentication.manager;
 
 import com.odeyalo.sonata.authorization.entity.AccessToken;
-import com.odeyalo.sonata.authorization.service.authentication.Subject;
 import com.odeyalo.sonata.authorization.service.authentication.AuthenticationPayload;
-import com.odeyalo.sonata.authorization.service.authentication.AuthenticationPayload.AuthenticationStrategy;
 import com.odeyalo.sonata.authorization.service.authentication.ParsedAuthenticationPayload;
+import com.odeyalo.sonata.authorization.service.authentication.Subject;
 import com.odeyalo.sonata.authorization.service.token.access.AccessTokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
@@ -13,24 +12,25 @@ import reactor.core.publisher.Mono;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.odeyalo.sonata.authorization.service.authentication.AuthenticationPayload.AuthenticationStrategy.SESSION;
+
 /**
- * {@link ReactiveAuthenticationProvider} impl that issues access token as authentication identifier
- * @see AccessTokenManager
+ * Uses session as authentication strategy. set the
  */
 @Component
-@Profile("token-authentication")
-public class ReactiveTokenBasedAuthenticationProvider implements ReactiveAuthenticationProvider {
+@Profile("session-authentication")
+public class ReactiveSessionBasedAuthenticationProvider implements ReactiveAuthenticationProvider {
     private final AccessTokenManager accessTokenManager;
 
     @Autowired
-    public ReactiveTokenBasedAuthenticationProvider(AccessTokenManager accessTokenManager) {
+    public ReactiveSessionBasedAuthenticationProvider(AccessTokenManager accessTokenManager) {
         this.accessTokenManager = accessTokenManager;
     }
 
     @Override
     public Mono<AuthenticationPayload> createAuthentication(Subject subject) {
         return accessTokenManager.createToken(subject)
-                .map(token -> AuthenticationPayload.of(token.getTokenValue(), calculateAuthenticationLifetime(token),AuthenticationStrategy.TOKEN));
+                .map(token -> AuthenticationPayload.of(token.getTokenValue(), calculateAuthenticationLifetime(token), SESSION));
     }
 
     @Override
@@ -39,10 +39,11 @@ public class ReactiveTokenBasedAuthenticationProvider implements ReactiveAuthent
                 .map(token -> convertToParsedAuthenticationPayload(authenticationIdentifier, token));
     }
 
+
     private ParsedAuthenticationPayload convertToParsedAuthenticationPayload(String authenticationIdentifier, AccessToken token) {
         return ParsedAuthenticationPayload.builder()
                 .authenticationIdentifier(authenticationIdentifier)
-                .authenticationStrategy(AuthenticationStrategy.TOKEN)
+                .authenticationStrategy(SESSION)
                 .userId(token.getUserId())
                 .claims(token.getClaims())
                 .expirationTime(token.getExpirationTime())

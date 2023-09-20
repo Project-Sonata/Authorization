@@ -9,6 +9,7 @@ import com.odeyalo.sonata.authorization.service.registration.RegistrationResult;
 import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationData;
 import com.odeyalo.sonata.authorization.service.registration.manager.RegistrationAnswer;
 import com.odeyalo.sonata.authorization.service.registration.manager.RegistrationManager;
+import com.odeyalo.sonata.authorization.support.web.enhancer.LoginEndpointResponseEnhancer;
 import com.odeyalo.sonata.common.authentication.dto.LoginCredentials;
 import com.odeyalo.sonata.common.authentication.exception.LoginAuthenticationFailedException;
 import com.odeyalo.sonata.common.authentication.exception.RegistrationFailedException;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import static com.odeyalo.sonata.authorization.dto.SuccessfulRegistrationConfirmationDto.ACCESS_TOKEN_KEY;
@@ -28,16 +30,19 @@ import static com.odeyalo.sonata.authorization.dto.SuccessfulRegistrationConfirm
 public class AuthorizationController {
     private final ReactiveLoginManager loginManager;
     private final RegistrationManager registrationManager;
+    private final LoginEndpointResponseEnhancer loginEndpointResponseEnhancer;
 
     @Autowired
-    public AuthorizationController(ReactiveLoginManager loginManager, RegistrationManager registrationManager) {
+    public AuthorizationController(ReactiveLoginManager loginManager, RegistrationManager registrationManager, LoginEndpointResponseEnhancer loginEndpointResponseEnhancer) {
         this.loginManager = loginManager;
         this.registrationManager = registrationManager;
+        this.loginEndpointResponseEnhancer = loginEndpointResponseEnhancer;
     }
 
     @PostMapping("/login")
-    public Mono<?> loginUser(@RequestBody LoginCredentials loginCredentials) throws LoginAuthenticationFailedException {
+    public Mono<?> loginUser(@RequestBody LoginCredentials loginCredentials, ServerWebExchange exchange) throws LoginAuthenticationFailedException {
         return loginManager.login(loginCredentials.getEmail(), loginCredentials.getPassword())
+                .flatMap(res -> loginEndpointResponseEnhancer.enhance(res, exchange).map(webExchange -> res))
                 .map(res -> LoginResponse.of(res.uniqueAuthenticationIdentifier(), res.authenticationStrategy(), res.lifetime()));
     }
 
