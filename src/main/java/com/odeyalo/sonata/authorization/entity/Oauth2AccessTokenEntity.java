@@ -1,6 +1,6 @@
 package com.odeyalo.sonata.authorization.entity;
 
-import com.odeyalo.sonata.authorization.service.token.oauth2.ScopeContainer;
+import com.odeyalo.sonata.authorization.support.scope.ScopeContainer;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

@@ -1,6 +1,5 @@
-package com.odeyalo.sonata.authorization.service.token.oauth2;
+package com.odeyalo.sonata.authorization.support.scope;
 
-import com.odeyalo.sonata.authorization.support.scope.Scope;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;

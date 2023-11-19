@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.authorization.service.token.oauth2;
 
+import com.odeyalo.sonata.authorization.support.scope.ScopeContainer;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 
