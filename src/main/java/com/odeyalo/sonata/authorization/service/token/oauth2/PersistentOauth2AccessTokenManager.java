@@ -6,18 +6,22 @@ import com.odeyalo.sonata.authorization.support.scope.Scope;
 import com.odeyalo.sonata.authorization.support.scope.ScopeContainer;
 import org.apache.commons.lang.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
+@Component
 public class PersistentOauth2AccessTokenManager implements Oauth2AccessTokenManager {
     private final Oauth2AccessTokenRepository oauth2AccessTokenRepository;
 
     private static final Duration TOKEN_LIFETIME = Duration.ofMinutes(15);
     private static final int TOKEN_GENERATION_LENGTH = 256;
 
+    @Autowired
     public PersistentOauth2AccessTokenManager(Oauth2AccessTokenRepository oauth2AccessTokenRepository) {
         this.oauth2AccessTokenRepository = oauth2AccessTokenRepository;
     }

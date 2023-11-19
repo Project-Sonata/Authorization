@@ -2,6 +2,7 @@ package com.odeyalo.sonata.authorization.repository;
 
 import com.odeyalo.sonata.authorization.entity.Oauth2AccessTokenEntity;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
+@Component
 public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRepository {
     private final Map<Long, Oauth2AccessTokenEntity> store = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong();
