@@ -1,5 +1,6 @@
 package com.odeyalo.sonata.authorization.controller;
 
+import com.odeyalo.sonata.authorization.dto.GeneratedInternalAccessTokenResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +13,14 @@ import reactor.core.publisher.Mono;
 public class InternalEndpointsController {
 
     @PostMapping("/oauth/token/access")
-    public Mono<ResponseEntity<?>> generateAccessToken(@RequestParam("user_id") String userId,
-                                                       @RequestParam("scope") String scopes) {
+    public Mono<ResponseEntity<GeneratedInternalAccessTokenResponseDto>> generateAccessToken(@RequestParam("user_id") String userId,
+                                                                                             @RequestParam("scope") String scopes) {
 
-        return Mono.empty();
+
+        return Mono.just(
+                ResponseEntity.ok(
+                        GeneratedInternalAccessTokenResponseDto.of("token")
+                )
+        );
     }
 }
