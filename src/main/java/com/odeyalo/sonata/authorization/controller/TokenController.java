@@ -59,6 +59,6 @@ public class TokenController {
     }
 
     private static long getOauth2AccessTokenExpiresIn(Oauth2AccessToken token) {
-        return TimeUnit.MILLISECONDS.toSeconds(token.getExpireTime()) - TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
+        return token.getExpireTime() - TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis());
     }
 }
