@@ -19,6 +19,7 @@ public class Oauth2AccessTokenEntity {
     String tokenValue;
     long issuedAtSeconds;
     long expiresInSeconds;
+    String userId;
     ScopeContainer scopes;
 
     public boolean isValid() {
