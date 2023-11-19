@@ -100,6 +100,21 @@ internal class PersistentOauth2AccessTokenManagerTest {
     }
 
     @Test
+    fun shouldContainUserId() {
+
+        val userId = "miku"
+        val scopes = listOf<Scope>(
+            CommonScope("write", "write something", setOf(Role.USER.name), Scope.Type.PUBLIC)
+        )
+
+        val result = testable.generateAccessToken(userId, scopes).block()
+
+        assertThat(result).isNotNull
+
+        assertThat(result.userId).isEqualTo(userId)
+    }
+
+    @Test
     fun existingTokenShouldBeVerified() {
         val userId = "miku"
         val scopes = listOf<Scope>(

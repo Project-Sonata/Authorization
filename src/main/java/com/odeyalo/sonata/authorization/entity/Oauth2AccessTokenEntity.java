@@ -23,6 +23,6 @@ public class Oauth2AccessTokenEntity {
     ScopeContainer scopes;
 
     public boolean isValid() {
-        return expiresInSeconds < Instant.now().getEpochSecond();
+        return expiresInSeconds > Instant.now().getEpochSecond();
     }
 }

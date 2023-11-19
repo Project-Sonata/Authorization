@@ -16,6 +16,7 @@ public class PersistentOauth2AccessTokenManager implements Oauth2AccessTokenMana
     private final Oauth2AccessTokenRepository oauth2AccessTokenRepository;
 
     private static final Duration TOKEN_LIFETIME = Duration.ofMinutes(15);
+    private static final int TOKEN_GENERATION_LENGTH = 256;
 
     public PersistentOauth2AccessTokenManager(Oauth2AccessTokenRepository oauth2AccessTokenRepository) {
         this.oauth2AccessTokenRepository = oauth2AccessTokenRepository;
@@ -29,13 +30,14 @@ public class PersistentOauth2AccessTokenManager implements Oauth2AccessTokenMana
         long issuedAt = Instant.now().getEpochSecond();
 
         Oauth2AccessToken token = Oauth2AccessToken.builder()
-                .tokenValue(RandomStringUtils.randomAlphanumeric(22))
+                .tokenValue(RandomStringUtils.randomAlphanumeric(TOKEN_GENERATION_LENGTH))
                 .issuedAt(issuedAt)
                 .expireTime(issuedAt + TOKEN_LIFETIME.getSeconds())
                 .scopes(ScopeContainer.fromCollection(scopes))
+                .userId(userId)
                 .build();
 
-        Oauth2AccessTokenEntity entity = toOauth2AccessTokenEntity(token, userId);
+        Oauth2AccessTokenEntity entity = toOauth2AccessTokenEntity(token);
 
         return oauth2AccessTokenRepository.save(entity)
                 .map(e -> token);
@@ -49,13 +51,13 @@ public class PersistentOauth2AccessTokenManager implements Oauth2AccessTokenMana
                 .map(PersistentOauth2AccessTokenManager::toOauth2AccessToken);
     }
 
-    private static Oauth2AccessTokenEntity toOauth2AccessTokenEntity(Oauth2AccessToken token, String userId) {
+    private static Oauth2AccessTokenEntity toOauth2AccessTokenEntity(Oauth2AccessToken token) {
         return Oauth2AccessTokenEntity.builder()
                 .tokenValue(token.getTokenValue())
                 .issuedAtSeconds(token.getIssuedAt())
                 .expiresInSeconds(token.getExpireTime())
                 .scopes(token.getScopes())
-                .userId(userId)
+                .userId(token.getUserId())
                 .build();
     }
 
@@ -65,6 +67,7 @@ public class PersistentOauth2AccessTokenManager implements Oauth2AccessTokenMana
                 .issuedAt(entity.getIssuedAtSeconds())
                 .expireTime(entity.getExpiresInSeconds())
                 .scopes(entity.getScopes())
+                .userId(entity.getUserId())
                 .build();
     }
 }
