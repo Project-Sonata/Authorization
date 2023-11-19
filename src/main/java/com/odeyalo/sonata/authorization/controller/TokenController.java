@@ -29,15 +29,14 @@ public class TokenController {
     @PostMapping(value = "/info", consumes = MediaType.APPLICATION_JSON_VALUE)
     public Mono<TokenIntrospectionResponse> tokenIntrospection(@RequestBody TokenIntrospectionRequest body) {
         return Mono.from(accessTokenManager.verifyToken(body.getToken()))
-                .map(Optional::of)
-                .defaultIfEmpty(Optional.empty())
-                .map(optionalToken -> optionalToken.map(t -> {
+                .map(t -> {
                     String scopes = String.join(" ", ((List<Scope>) t.getClaims().get("scopes"))
                             .stream()
                             .map(Scope::getName)
                             .collect(Collectors.toSet()));
                     return TokenIntrospectionResponse.valid(t.getUserId(), scopes, t.getCreationTime(), getExpiresIn(t));
-                }).orElse(TokenIntrospectionResponse.invalid()));
+                })
+                .defaultIfEmpty(TokenIntrospectionResponse.invalid());
 
     }
 
