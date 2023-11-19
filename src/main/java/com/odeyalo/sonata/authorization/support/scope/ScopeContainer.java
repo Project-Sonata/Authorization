@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Container with scopes
@@ -49,6 +50,10 @@ public class ScopeContainer implements Iterable<Scope> {
 
     public Scope get(int index) {
         return scopes.get(index);
+    }
+
+    public Stream<Scope> stream() {
+        return scopes.stream();
     }
 
     @NotNull
