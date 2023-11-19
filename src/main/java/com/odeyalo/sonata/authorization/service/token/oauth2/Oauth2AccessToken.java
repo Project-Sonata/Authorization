@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class Oauth2AccessToken {
     @NotNull
     String tokenValue;
+    String userId;
     long issuedAt;
     long expireTime;
     @NotNull
