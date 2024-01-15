@@ -1,8 +1,7 @@
 package com.odeyalo.sonata.authorization.testing.factory;
 
 import com.odeyalo.sonata.authorization.repository.InMemoryAccessTokenRepository;
-import com.odeyalo.sonata.authorization.repository.storage.AccessTokenStorage;
-import com.odeyalo.sonata.authorization.repository.storage.DelegatingAccessTokenStorage;
+import com.odeyalo.sonata.authorization.repository.ReactiveAccessTokenRepository;
 import com.odeyalo.sonata.authorization.service.token.access.ScopeBasedDelegatingPersistentAccessTokenManager;
 import com.odeyalo.sonata.authorization.service.token.access.generator.AccessTokenGenerator;
 import com.odeyalo.sonata.authorization.service.token.access.generator.RandomOpaqueAccessTokenGenerator;
@@ -20,6 +19,7 @@ public class AccessTokenManagerFactory {
                 .withScopes(scopes)
                 .build();
     }
+
     public static ScopeBasedDelegatingPersistentAccessTokenManagerBuilder scopeBasedManagerBuilder(List<Scope> scopes) {
         return new ScopeBasedDelegatingPersistentAccessTokenManagerBuilder()
                 .withScopes(scopes);
@@ -28,7 +28,7 @@ public class AccessTokenManagerFactory {
     public static class ScopeBasedDelegatingPersistentAccessTokenManagerBuilder {
         private AccessTokenGenerator accessTokenGenerator = new RandomOpaqueAccessTokenGenerator(500000L);
         private SonataScopeProvider scopeProvider = new DefaultCacheableSonataScopeProvider(Flux::empty);
-        private AccessTokenStorage storage = new DelegatingAccessTokenStorage(List.of(new InMemoryAccessTokenRepository()));
+        private ReactiveAccessTokenRepository accessTokenRepository = new InMemoryAccessTokenRepository();
 
         public ScopeBasedDelegatingPersistentAccessTokenManagerBuilder overrideTokenGenerator(AccessTokenGenerator accessTokenGenerator) {
             this.accessTokenGenerator = accessTokenGenerator;
@@ -50,13 +50,13 @@ public class AccessTokenManagerFactory {
             return this;
         }
 
-        public ScopeBasedDelegatingPersistentAccessTokenManagerBuilder overrideTokenStorage(AccessTokenStorage storage) {
-            this.storage = storage;
+        public ScopeBasedDelegatingPersistentAccessTokenManagerBuilder overrideTokenStorage(ReactiveAccessTokenRepository accessTokenRepository) {
+            this.accessTokenRepository = accessTokenRepository;
             return this;
         }
 
         public ScopeBasedDelegatingPersistentAccessTokenManager build() {
-            return new ScopeBasedDelegatingPersistentAccessTokenManager(accessTokenGenerator, scopeProvider, storage);
+            return new ScopeBasedDelegatingPersistentAccessTokenManager(accessTokenGenerator, scopeProvider, accessTokenRepository);
         }
     }
 

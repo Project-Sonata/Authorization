@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.TestInstance
-import reactor.test.StepVerifier
 
 /**
  * Tests for [InMemoryReactiveUserRepository] class
@@ -42,7 +41,7 @@ class InMemoryReactiveUserRepositoryTest {
     fun prepareExistingUsers() {
         val inMemoryUser = UserFaker.createUser().overrideUsername(EXISTING_USERNAME).asInMemoryUser()
 
-        existingUser = repository.save(inMemoryUser).block() as User
+        existingUser = repository.save(inMemoryUser).block()!!
     }
 
     @AfterEach
@@ -119,10 +118,11 @@ class InMemoryReactiveUserRepositoryTest {
         )
 
         val repo = InMemoryReactiveUserRepository(preparedUsers)
+        val foundUsers = repo.findAll().collectList().block()
 
         assertThat(preparedUsers)
             .describedAs("The users must be equal!")
-            .hasSameElementsAs(repo.findAll().toIterable())
+            .hasSameElementsAs(foundUsers)
     }
 
     @Test

@@ -2,7 +2,7 @@ package com.odeyalo.sonata.authorization.service.token.access;
 
 import com.odeyalo.sonata.authorization.entity.AccessToken;
 import com.odeyalo.sonata.authorization.entity.User;
-import com.odeyalo.sonata.authorization.repository.storage.AccessTokenStorage;
+import com.odeyalo.sonata.authorization.repository.ReactiveAccessTokenRepository;
 import com.odeyalo.sonata.authorization.service.authentication.Subject;
 import com.odeyalo.sonata.authorization.service.token.access.generator.AccessTokenGenerator;
 import com.odeyalo.sonata.authorization.support.scope.SonataScopeProvider;
@@ -13,10 +13,10 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 /**
- * Implementation of {@link AccessTokenManager} that uses {@link AccessTokenStorage}
+ * Implementation of {@link AccessTokenManager} that uses {@link ReactiveAccessTokenRepository}
  * to save the issued tokens by {@link AccessTokenGenerator}
  * <p>
- * Note: The implementation issued tokens with ALL scopes for {@link User#getRole()}.
+ * Note: The implementation issued tokens with ALL scopes for {@link User#getRole()} ()}.
  * <p>
  * For example, if user has role USER, then ALL scopes for USER ROLE will be generated, such as playlist:read, profile:read, etc.
  * It also important that this implementation does not restrict any scopes in token even if ROLE is ADMIN or ARTIST, etc.
@@ -26,15 +26,16 @@ import java.util.Map;
 public class ScopeBasedDelegatingPersistentAccessTokenManager implements AccessTokenManager {
     private final AccessTokenGenerator accessTokenGenerator;
     private final SonataScopeProvider scopeProvider;
-    private final AccessTokenStorage storage;
+    private final ReactiveAccessTokenRepository accessTokenRepository;
 
     public static final String SCOPES_CLAIM_NAME = "scopes";
 
     @Autowired
-    public ScopeBasedDelegatingPersistentAccessTokenManager(AccessTokenGenerator accessTokenGenerator, SonataScopeProvider scopeProvider, AccessTokenStorage storage) {
+    public ScopeBasedDelegatingPersistentAccessTokenManager(AccessTokenGenerator accessTokenGenerator, SonataScopeProvider scopeProvider,
+                                                            ReactiveAccessTokenRepository accessTokenRepository) {
         this.accessTokenGenerator = accessTokenGenerator;
         this.scopeProvider = scopeProvider;
-        this.storage = storage;
+        this.accessTokenRepository = accessTokenRepository;
     }
 
     @Override
@@ -45,12 +46,12 @@ public class ScopeBasedDelegatingPersistentAccessTokenManager implements AccessT
                     return accessTokenGenerator.generateAccessToken(String.valueOf(subject.getId()), claims);
                 })
                 .map(GeneratedAccessTokenAdapter::new)
-                .flatMap(storage::save);
+                .flatMap(generatedAccessToken -> accessTokenRepository.save(generatedAccessToken.toAccessToken()));
     }
 
     @Override
     public Mono<AccessToken> verifyToken(String tokenValue) {
-        return storage.findAccessTokenByTokenValue(tokenValue)
+        return accessTokenRepository.findAccessTokenByTokenValue(tokenValue)
                 .filter(this::isTokenValid);
     }
 

@@ -1,8 +1,9 @@
 package com.odeyalo.sonata.authorization.repository;
 
-import com.odeyalo.sonata.authorization.entity.InMemoryAccessToken;
+import com.odeyalo.sonata.authorization.entity.AccessToken;
 import com.odeyalo.sonata.authorization.support.util.MultiValueConcurrentMap;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -17,8 +18,9 @@ import java.util.concurrent.atomic.AtomicLong;
  * Useful for development and tests
  */
 @Component
-public class InMemoryAccessTokenRepository implements ReactiveAccessTokenRepository<InMemoryAccessToken> {
-    private final ConcurrentMap<Long, InMemoryAccessToken> cachedById;
+@Primary
+public class InMemoryAccessTokenRepository implements ReactiveAccessTokenRepository {
+    private final ConcurrentMap<Long, AccessToken> cachedById;
     // Used to store the token by token value. key - token value, value - token id
     private final ConcurrentMap<String, Long> cachedByTokenValue;
     // Used to store the tokens by user id. key - user id, value - token id
@@ -34,22 +36,22 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Mono<InMemoryAccessToken> findById(Long id) {
+    public Mono<AccessToken> findById(Long id) {
         return Mono.just(cachedById.get(id));
     }
 
     @NotNull
     @Override
-    public Flux<InMemoryAccessToken> findAll() {
+    public Flux<AccessToken> findAll() {
         return Flux.fromStream(cachedById.values().stream());
     }
 
     @NotNull
     @Override
-    public Mono<InMemoryAccessToken> save(InMemoryAccessToken token) {
+    public Mono<AccessToken> save(AccessToken token) {
         return Mono.just(token)
                 .map(t -> {
-                    InMemoryAccessToken newToken = InMemoryAccessToken.copyFrom(token);
+                    AccessToken newToken = AccessToken.copyFrom(token);
                     newToken.setId(idHolder.incrementAndGet());
                     newToken.setBusinessKey(UUID.randomUUID().toString());
                     return newToken;
@@ -72,7 +74,7 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Mono<InMemoryAccessToken> findAccessTokenByTokenValue(@NotNull String tokenValue) {
+    public Mono<AccessToken> findAccessTokenByTokenValue(@NotNull String tokenValue) {
         return Mono.justOrEmpty(cachedByTokenValue.get(tokenValue))
                 .map(cachedById::get)
                 .log("findAccessTokenByTokenValue");
@@ -80,7 +82,7 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Flux<InMemoryAccessToken> findAllByUserId(@NotNull String userId) {
+    public Flux<AccessToken> findAllByUserId(@NotNull String userId) {
         return Mono.justOrEmpty(cachedByUserId.get(userId))
                 .flatMapMany(Flux::fromIterable)
                 .map(cachedById::get);
@@ -103,14 +105,8 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Flux<InMemoryAccessToken> saveAll(@NotNull Iterable<? extends InMemoryAccessToken> tokens) {
+    public Flux<AccessToken> saveAll(@NotNull Iterable<? extends AccessToken> tokens) {
         return Flux.fromIterable(tokens)
                 .flatMap(this::save);
-    }
-
-    @NotNull
-    @Override
-    public RepositoryType getRepositoryType() {
-        return RepositoryType.IN_MEMORY;
     }
 }

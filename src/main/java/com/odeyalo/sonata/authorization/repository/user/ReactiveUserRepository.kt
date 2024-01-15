@@ -1,13 +1,16 @@
 package com.odeyalo.sonata.authorization.repository.user
 
 import com.odeyalo.sonata.authorization.entity.User
-import com.odeyalo.sonata.authorization.repository.RepositoryType
+import com.odeyalo.sonata.authorization.repository.BasicPersistentOperations
+import reactor.core.publisher.Mono
 
 /**
  * Repository to work with User entity
  */
-interface ReactiveUserRepository<T : User> : PersistentUserOperations<T> {
+interface ReactiveUserRepository : BasicPersistentOperations<User, Long> {
 
-    fun getRepositoryType(): RepositoryType
+    fun findUserByUsername(username: String): Mono<User>
+
+    fun deleteUserByUsername(username: String): Mono<Void>
 
 }
