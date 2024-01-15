@@ -58,7 +58,7 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
 
     @Override
     @NotNull
-    public Mono<AccessToken> findById(Long id) {
+    public Mono<AccessToken> findById(@NotNull Long id) {
         return template.opsForHash().get(ACCESS_TOKEN_KEY, id)
                 .map(bodyMap -> redisObjectMapper.convertValue(bodyMap, RedisAccessToken.class))
                 .map(RedisAccessToken::toAccessToken);
@@ -100,7 +100,7 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
 
     @Override
     @NotNull
-    public Mono<Void> deleteById(Long id) {
+    public Mono<Void> deleteById(@NotNull Long id) {
         return template.opsForHash().remove(ACCESS_TOKEN_KEY, id)
                 .then();
     }
