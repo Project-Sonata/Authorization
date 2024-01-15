@@ -2,6 +2,7 @@ package com.odeyalo.sonata.authorization.repository.user;
 
 import com.odeyalo.sonata.authorization.entity.BaseEntityImpl;
 import com.odeyalo.sonata.authorization.entity.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -48,48 +49,47 @@ public class InMemoryReactiveUserRepository implements ReactiveUserRepository {
     }
 
     @Override
-    public Mono<User> findUserByUsername(String username) {
+    @NotNull
+    public Mono<User> findUserByUsername(@NotNull String username) {
         return Mono.justOrEmpty(storeByUsername.get(username))
                 .flatMap(id -> Mono.justOrEmpty(storeById.get(id)));
     }
 
     @Override
-    public Mono<Void> deleteUserByUsername(String username) {
+    @NotNull
+    public Mono<Void> deleteUserByUsername(@NotNull String username) {
         return Mono.justOrEmpty(storeByUsername.get(username))
-                .doOnNext(id -> storeById.remove(id))
+                .doOnNext(storeById::remove)
                 .then();
     }
 
     @Override
-    public Mono<User> findById(Long id) {
+    @NotNull
+    public Mono<User> findById(@NotNull Long id) {
         return Mono.justOrEmpty(storeById.remove(id));
     }
 
     @Override
+    @NotNull
     public Flux<User> findAll() {
         return Flux.fromIterable(storeById.values());
     }
 
     @Override
-    public Mono<Void> deleteById(Long id) {
+    @NotNull
+    public Mono<Void> deleteById(@NotNull Long id) {
         return Mono.justOrEmpty(storeById.remove(id))
                 .then();
     }
 
     @Override
-    public Mono<User> save(User entity) {
+    @NotNull
+    public Mono<User> save(@NotNull User entity) {
         return Mono.just(entity)
                 .map(user -> {
                     if (user.getId() == null) {
                         long id = idHolder.incrementAndGet();
-                        return new User(
-                                id,
-                                user.getBusinessKey(),
-                                user.getCreationTime(),
-                                user.getUsername(),
-                                user.getGrantedAuthorities(),
-                                user.getRole()
-                        );
+                        user.setId(id);
                     }
                     return user;
                 })
