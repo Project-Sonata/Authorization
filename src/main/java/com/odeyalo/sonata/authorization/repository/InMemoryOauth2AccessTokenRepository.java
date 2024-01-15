@@ -18,8 +18,8 @@ public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRep
 
     @NotNull
     @Override
-    public Mono<Oauth2AccessTokenEntity> findById(Long id) {
-        return Mono.just(store.get(id));
+    public Mono<Oauth2AccessTokenEntity> findById(@NotNull Long id) {
+        return Mono.justOrEmpty(store.get(id));
     }
 
     @NotNull
@@ -40,24 +40,24 @@ public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRep
 
     @NotNull
     @Override
-    public Mono<Void> deleteById(Long id) {
+    public Mono<Void> deleteById(@NotNull Long id) {
         return Mono.just(store.remove(id))
                 .then();
     }
 
     @Override
-    public Mono<Oauth2AccessTokenEntity> findByTokenValue(String tokenValue) {
-        if (tokenValue == null) {
-            return Mono.empty();
-        }
+    @NotNull
+    public Mono<Oauth2AccessTokenEntity> findByTokenValue(@NotNull String tokenValue) {
         return Flux.fromIterable(store.values())
                 .filter(entity -> Objects.equals(entity.getTokenValue(), tokenValue))
                 .next();
     }
 
     @Override
+    @NotNull
     public Mono<Void> deleteAll() {
-        store.clear();
-        return Mono.empty();
+        return Mono.fromRunnable(
+                store::clear
+        );
     }
 }
