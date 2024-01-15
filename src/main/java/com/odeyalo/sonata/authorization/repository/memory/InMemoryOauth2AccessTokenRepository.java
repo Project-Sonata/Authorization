@@ -1,6 +1,7 @@
-package com.odeyalo.sonata.authorization.repository;
+package com.odeyalo.sonata.authorization.repository.memory;
 
 import com.odeyalo.sonata.authorization.entity.Oauth2AccessTokenEntity;
+import com.odeyalo.sonata.authorization.repository.Oauth2AccessTokenRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;

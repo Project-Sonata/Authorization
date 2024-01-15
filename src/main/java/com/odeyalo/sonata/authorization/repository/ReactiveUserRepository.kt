@@ -1,7 +1,6 @@
-package com.odeyalo.sonata.authorization.repository.user
+package com.odeyalo.sonata.authorization.repository
 
 import com.odeyalo.sonata.authorization.entity.User
-import com.odeyalo.sonata.authorization.repository.BasicPersistentOperations
 import reactor.core.publisher.Mono
 
 /**

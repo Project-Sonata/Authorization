@@ -2,7 +2,7 @@ package com.odeyalo.sonata.authorization.service.registration.remote;
 
 import com.odeyalo.sonata.authorization.entity.Role;
 import com.odeyalo.sonata.authorization.entity.User;
-import com.odeyalo.sonata.authorization.repository.user.ReactiveUserRepository;
+import com.odeyalo.sonata.authorization.repository.ReactiveUserRepository;
 import com.odeyalo.sonata.authorization.service.registration.*;
 import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationData;
 import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationResult;

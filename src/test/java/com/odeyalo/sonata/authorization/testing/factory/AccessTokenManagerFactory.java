@@ -1,6 +1,6 @@
 package com.odeyalo.sonata.authorization.testing.factory;
 
-import com.odeyalo.sonata.authorization.repository.InMemoryAccessTokenRepository;
+import com.odeyalo.sonata.authorization.repository.memory.InMemoryAccessTokenRepository;
 import com.odeyalo.sonata.authorization.repository.ReactiveAccessTokenRepository;
 import com.odeyalo.sonata.authorization.service.token.access.ScopeBasedDelegatingPersistentAccessTokenManager;
 import com.odeyalo.sonata.authorization.service.token.access.generator.AccessTokenGenerator;

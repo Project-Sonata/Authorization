@@ -1,7 +1,8 @@
-package com.odeyalo.sonata.authorization.repository.user;
+package com.odeyalo.sonata.authorization.repository.memory;
 
 import com.odeyalo.sonata.authorization.entity.BaseEntityImpl;
 import com.odeyalo.sonata.authorization.entity.User;
+import com.odeyalo.sonata.authorization.repository.ReactiveUserRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;

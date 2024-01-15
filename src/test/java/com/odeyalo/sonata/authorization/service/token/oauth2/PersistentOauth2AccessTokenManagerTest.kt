@@ -1,7 +1,7 @@
 package com.odeyalo.sonata.authorization.service.token.oauth2
 
 import com.odeyalo.sonata.authorization.entity.Role
-import com.odeyalo.sonata.authorization.repository.InMemoryOauth2AccessTokenRepository
+import com.odeyalo.sonata.authorization.repository.memory.InMemoryOauth2AccessTokenRepository
 import com.odeyalo.sonata.authorization.support.scope.CommonScope
 import com.odeyalo.sonata.authorization.support.scope.Scope
 import org.assertj.core.api.Assertions.assertThat

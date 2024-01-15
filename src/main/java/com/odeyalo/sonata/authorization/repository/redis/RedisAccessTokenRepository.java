@@ -1,8 +1,9 @@
-package com.odeyalo.sonata.authorization.repository;
+package com.odeyalo.sonata.authorization.repository.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.odeyalo.sonata.authorization.entity.AccessToken;
 import com.odeyalo.sonata.authorization.entity.RedisAccessToken;
+import com.odeyalo.sonata.authorization.repository.ReactiveAccessTokenRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
 import org.springframework.stereotype.Repository;

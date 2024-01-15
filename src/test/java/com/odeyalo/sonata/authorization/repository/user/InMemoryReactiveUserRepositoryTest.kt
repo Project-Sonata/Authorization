@@ -1,6 +1,7 @@
 package com.odeyalo.sonata.authorization.repository.user
 
 import com.odeyalo.sonata.authorization.entity.User
+import com.odeyalo.sonata.authorization.repository.memory.InMemoryReactiveUserRepository
 import com.odeyalo.sonata.authorization.testing.faker.UserFaker
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -22,7 +23,8 @@ class InMemoryReactiveUserRepositoryTest {
         private const val EXISTING_USERNAME = "mikunakano"
     }
 
-    private val repository: InMemoryReactiveUserRepository = InMemoryReactiveUserRepository()
+    private val repository: InMemoryReactiveUserRepository =
+        InMemoryReactiveUserRepository()
 
     private lateinit var existingUser: User
 
@@ -117,7 +119,9 @@ class InMemoryReactiveUserRepositoryTest {
             UserFaker.createUser().asInMemoryUser()
         )
 
-        val repo = InMemoryReactiveUserRepository(preparedUsers)
+        val repo = InMemoryReactiveUserRepository(
+            preparedUsers
+        )
         val foundUsers = repo.findAll().collectList().block()
 
         assertThat(preparedUsers)

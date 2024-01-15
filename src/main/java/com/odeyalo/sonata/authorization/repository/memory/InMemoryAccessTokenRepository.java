@@ -1,6 +1,7 @@
-package com.odeyalo.sonata.authorization.repository;
+package com.odeyalo.sonata.authorization.repository.memory;
 
 import com.odeyalo.sonata.authorization.entity.AccessToken;
+import com.odeyalo.sonata.authorization.repository.ReactiveAccessTokenRepository;
 import com.odeyalo.sonata.authorization.support.util.MultiValueConcurrentMap;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Primary;
