@@ -8,11 +8,13 @@ import com.odeyalo.sonata.cello.core.authentication.resourceowner.ResourceOwnerA
 import com.odeyalo.sonata.cello.core.authentication.resourceowner.UsernamePasswordAuthenticatedResourceOwnerAuthentication;
 import com.odeyalo.sonata.cello.core.authentication.resourceowner.exception.ResourceOwnerAuthenticationException;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 /**
  * Custom authentication manager that send requests to authentication microservice
  */
+@Component
 public class DefaultResourceOwnerAuthenticationManager implements ResourceOwnerAuthenticationManager {
     private final SonataAuthenticationProvider sonataAuthenticationProvider;
 
