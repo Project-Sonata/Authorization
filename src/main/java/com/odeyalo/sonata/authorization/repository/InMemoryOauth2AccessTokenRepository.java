@@ -30,7 +30,7 @@ public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRep
 
     @NotNull
     @Override
-    public Mono<Oauth2AccessTokenEntity> save(Oauth2AccessTokenEntity entity) {
+    public Mono<Oauth2AccessTokenEntity> save(@NotNull Oauth2AccessTokenEntity entity) {
         if (entity.getId() == null) {
             entity.setId(idCounter.incrementAndGet());
         }

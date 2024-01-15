@@ -36,7 +36,7 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Mono<AccessToken> findById(Long id) {
+    public Mono<AccessToken> findById(@NotNull Long id) {
         return Mono.just(cachedById.get(id));
     }
 
@@ -48,7 +48,7 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Mono<AccessToken> save(AccessToken token) {
+    public Mono<AccessToken> save(@NotNull AccessToken token) {
         return Mono.just(token)
                 .map(t -> {
                     AccessToken newToken = AccessToken.copyFrom(token);
@@ -66,7 +66,7 @@ public class InMemoryAccessTokenRepository implements ReactiveAccessTokenReposit
 
     @NotNull
     @Override
-    public Mono<Void> deleteById(Long id) {
+    public Mono<Void> deleteById(@NotNull Long id) {
         return Mono.just(id)
                 .doOnNext(cachedById::remove)
                 .then();
