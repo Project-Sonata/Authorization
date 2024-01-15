@@ -14,10 +14,10 @@ import reactor.core.publisher.Mono;
  */
 @Repository
 public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository {
-    public static final String ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
+    private static final String ACCESS_TOKEN_KEY = "ACCESS_TOKEN";
     private static final String ACCESS_TOKEN_ID_SEQUENCE_KEY = "access_token_id_seq";
-    public static final String ACCESS_TOKEN_USER_ID_INDEX_PREFIX = "token:user:id:";
-    public static final String TOKEN_VALUE_INDEX_PREFIX = "token:value:";
+    private static final String ACCESS_TOKEN_USER_ID_INDEX_PREFIX = "token:user:id:";
+    private static final String TOKEN_VALUE_INDEX_PREFIX = "token:value:";
 
     private final ReactiveRedisOperations<String, Object> template;
     private final ObjectMapper redisObjectMapper;
@@ -28,7 +28,8 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
     }
 
     @Override
-    public Mono<AccessToken> findAccessTokenByTokenValue(String tokenValue) {
+    @NotNull
+    public Mono<AccessToken> findAccessTokenByTokenValue(@NotNull String tokenValue) {
         return template.opsForSet().members(TOKEN_VALUE_INDEX_PREFIX + tokenValue)
                 .flatMap(tokenId -> template.opsForHash().get(ACCESS_TOKEN_KEY, tokenId))
                 .flatMap(bodyMap -> {
@@ -40,7 +41,8 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
     }
 
     @Override
-    public Mono<AccessToken> save(AccessToken token) {
+    @NotNull
+    public Mono<AccessToken> save(@NotNull AccessToken token) {
         return template.opsForValue().get(ACCESS_TOKEN_ID_SEQUENCE_KEY)
                 .defaultIfEmpty(0L)
                 // Increment the index to next value
@@ -55,6 +57,7 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
     }
 
     @Override
+    @NotNull
     public Mono<AccessToken> findById(Long id) {
         return template.opsForHash().get(ACCESS_TOKEN_KEY, id)
                 .map(bodyMap -> redisObjectMapper.convertValue(bodyMap, RedisAccessToken.class))
@@ -62,6 +65,7 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
     }
 
     @Override
+    @NotNull
     public Flux<AccessToken> findAll() {
         return template.opsForHash().keys(ACCESS_TOKEN_KEY)
                 .map(id -> (Long) id)
@@ -69,6 +73,7 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
     }
 
     @Override
+    @NotNull
     public Flux<AccessToken> findAllByUserId(@NotNull String userId) {
         return template.opsForSet()
                 .members(ACCESS_TOKEN_USER_ID_INDEX_PREFIX + userId)
@@ -79,21 +84,22 @@ public class RedisAccessTokenRepository implements ReactiveAccessTokenRepository
     }
 
     @Override
+    @NotNull
     public Mono<Void> deleteAllByUserId(@NotNull String userId) {
         return findAllByUserId(userId)
                 .flatMap(token -> template.opsForHash().remove(ACCESS_TOKEN_ID_SEQUENCE_KEY, token.getId()))
                 .then();
     }
 
-    @NotNull
     @Override
+    @NotNull
     public Flux<AccessToken> saveAll(@NotNull Iterable<? extends AccessToken> tokens) {
         return Flux.fromIterable(tokens)
                 .flatMap(this::save);
     }
 
-    @NotNull
     @Override
+    @NotNull
     public Mono<Void> deleteById(Long id) {
         return template.opsForHash().remove(ACCESS_TOKEN_KEY, id)
                 .then();
