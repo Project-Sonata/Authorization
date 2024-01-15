@@ -1,8 +1,8 @@
 package com.odeyalo.sonata.authorization.service.registration.remote;
 
 import com.odeyalo.sonata.authorization.entity.Role;
-import com.odeyalo.sonata.authorization.repository.storage.PersistableUser;
-import com.odeyalo.sonata.authorization.repository.storage.UserStorage;
+import com.odeyalo.sonata.authorization.entity.User;
+import com.odeyalo.sonata.authorization.repository.ReactiveUserRepository;
 import com.odeyalo.sonata.authorization.service.registration.*;
 import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationData;
 import com.odeyalo.sonata.authorization.service.registration.confirmation.RegistrationConfirmationResult;
@@ -23,13 +23,13 @@ import java.util.Set;
 public class RemoteRegistrationProvider implements ConfirmableRegistrationProvider {
     private final RemoteServiceUserRegistrar remoteRegistrar;
     private final GrantedAuthoritiesProvider authoritiesProvider;
-    private final UserStorage userStorage;
+    private final ReactiveUserRepository userRepository;
 
     @Autowired
-    public RemoteRegistrationProvider(RemoteServiceUserRegistrar remoteRegistrar, GrantedAuthoritiesProvider authoritiesProvider, UserStorage userStorage) {
+    public RemoteRegistrationProvider(RemoteServiceUserRegistrar remoteRegistrar, GrantedAuthoritiesProvider authoritiesProvider, ReactiveUserRepository userRepository) {
         this.remoteRegistrar = remoteRegistrar;
         this.authoritiesProvider = authoritiesProvider;
-        this.userStorage = userStorage;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -65,15 +65,15 @@ public class RemoteRegistrationProvider implements ConfirmableRegistrationProvid
     }
 
     private Mono<RegisteredUser> saveUserLocally(BasicUserInfo info, Role role, Set<GrantedAuthority> grantedAuthorities) {
-        PersistableUser user = PersistableUser
+        User user = User
                 .builder()
                 .id(Long.parseLong(info.id()))
-                .role(role)
+                .role(role.getRoleValue())
                 .username(info.username())
-                .authorities(grantedAuthorities)
+                .grantedAuthorities(grantedAuthorities)
                 .build();
 
-        return userStorage.save(user)
+        return userRepository.save(user)
                 .subscribeOn(Schedulers.boundedElastic())
                 .map(RegisteredUser::from);
     }

@@ -1,18 +1,10 @@
 package com.odeyalo.sonata.authorization.service.authentication;
 
 import com.odeyalo.sonata.authorization.entity.Role;
-import com.odeyalo.sonata.authorization.repository.storage.PersistableUser;
 import com.odeyalo.sonata.authorization.service.registration.BasicUserInfo;
-import com.odeyalo.sonata.common.authentication.dto.UserInfo;
-import com.odeyalo.sonata.common.authentication.dto.response.AuthenticationResultResponse;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.server.ServerWebExchange;
 
-import java.nio.file.attribute.AclEntry;
 import java.util.Collection;
 
 /**

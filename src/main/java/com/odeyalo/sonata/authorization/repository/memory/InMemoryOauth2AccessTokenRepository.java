@@ -1,6 +1,7 @@
-package com.odeyalo.sonata.authorization.repository;
+package com.odeyalo.sonata.authorization.repository.memory;
 
 import com.odeyalo.sonata.authorization.entity.Oauth2AccessTokenEntity;
+import com.odeyalo.sonata.authorization.repository.Oauth2AccessTokenRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
@@ -18,8 +19,8 @@ public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRep
 
     @NotNull
     @Override
-    public Mono<Oauth2AccessTokenEntity> findById(Long id) {
-        return Mono.just(store.get(id));
+    public Mono<Oauth2AccessTokenEntity> findById(@NotNull Long id) {
+        return Mono.justOrEmpty(store.get(id));
     }
 
     @NotNull
@@ -30,7 +31,7 @@ public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRep
 
     @NotNull
     @Override
-    public Mono<Oauth2AccessTokenEntity> save(Oauth2AccessTokenEntity entity) {
+    public Mono<Oauth2AccessTokenEntity> save(@NotNull Oauth2AccessTokenEntity entity) {
         if (entity.getId() == null) {
             entity.setId(idCounter.incrementAndGet());
         }
@@ -40,24 +41,24 @@ public class InMemoryOauth2AccessTokenRepository implements Oauth2AccessTokenRep
 
     @NotNull
     @Override
-    public Mono<Void> deleteById(Long id) {
+    public Mono<Void> deleteById(@NotNull Long id) {
         return Mono.just(store.remove(id))
                 .then();
     }
 
     @Override
-    public Mono<Oauth2AccessTokenEntity> findByTokenValue(String tokenValue) {
-        if (tokenValue == null) {
-            return Mono.empty();
-        }
+    @NotNull
+    public Mono<Oauth2AccessTokenEntity> findByTokenValue(@NotNull String tokenValue) {
         return Flux.fromIterable(store.values())
                 .filter(entity -> Objects.equals(entity.getTokenValue(), tokenValue))
                 .next();
     }
 
     @Override
+    @NotNull
     public Mono<Void> deleteAll() {
-        store.clear();
-        return Mono.empty();
+        return Mono.fromRunnable(
+                store::clear
+        );
     }
 }

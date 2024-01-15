@@ -1,7 +1,6 @@
 package com.odeyalo.sonata.authorization.testing.faker;
 
 import com.github.javafaker.Faker;
-import com.odeyalo.sonata.authorization.entity.InMemoryUser;
 import com.odeyalo.sonata.authorization.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -74,9 +73,9 @@ public class UserFaker {
         return this;
     }
 
-    public InMemoryUser asInMemoryUser() {
+    public User asInMemoryUser() {
         User user = get();
-        return InMemoryUser.from(user);
+        return User.from(user);
     }
 
     public User get() {
@@ -128,7 +127,7 @@ public class UserFaker {
         }
 
         public User create() {
-            return new InMemoryUser(id, businessKey, creationTime, username, authorities, role);
+            return new User(id, businessKey, creationTime, username, authorities, role);
         }
     }
 }

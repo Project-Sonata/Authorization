@@ -2,7 +2,7 @@ package com.odeyalo.sonata.authorization.testing.contract;
 
 import com.odeyalo.sonata.authorization.AuthorizationApplication;
 import com.odeyalo.sonata.authorization.controller.TokenController;
-import com.odeyalo.sonata.authorization.entity.InMemoryAccessToken;
+import com.odeyalo.sonata.authorization.entity.AccessToken;
 import com.odeyalo.sonata.authorization.service.token.access.AccessTokenManager;
 import com.odeyalo.sonata.authorization.service.token.access.ScopeBasedDelegatingPersistentAccessTokenManager;
 import com.odeyalo.sonata.authorization.support.scope.CommonScope;
@@ -59,7 +59,7 @@ public class TokenControllerBaseClass {
         Mockito.when(tokenManager.verifyToken(VALID_TOKEN_VALUE))
                 .thenReturn(
                         Mono.just(
-                                InMemoryAccessToken.builder()
+                                AccessToken.builder()
                                         .claim(ScopeBasedDelegatingPersistentAccessTokenManager.SCOPES_CLAIM_NAME, scopes)
                                         .userId("1")
                                         .creationTime(System.currentTimeMillis() - 60000)
